@@ -76,7 +76,8 @@
   }
 
   /* ---------- データ ---------- */
-  var loading = fetch("data/tokyo.json?v=3", { cache: "no-cache" })   // 古いデータが残らないように、毎回サーバーに確かめる.then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }).then(function (js) {
+  // 古いデータが残らないように、毎回サーバーに確かめる（cache: "no-cache"）
+  var loading = fetch("data/tokyo.json?v=3", { cache: "no-cache" }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }).then(function (js) {
     st.places = js.places; st.sources = js.sources; st.date = js.date;
     js.places.forEach(function (p, i) {
       p.i = i;
