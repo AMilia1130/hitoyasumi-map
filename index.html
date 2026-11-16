@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ひとやすみマップ｜近くの授乳室・おむつ替え・遊び場・子連れごはん</title>
+<meta name="description" content="赤ちゃんや小さな子とのおでかけ中に、いまいる場所の近くの授乳室・おむつ替えスペース・遊び場・児童館・子連れで入りやすい飲食店を地図で探せます。登録なし・無料。">
+<meta property="og:title" content="ひとやすみマップ｜近くの授乳室・遊び場をさがす">
+<meta property="og:description" content="赤ちゃんとのおでかけ中に、近くの授乳室・おむつ替え・遊び場・子連れごはんを地図で。登録なし・無料。">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#FBF6EC">
+<link rel="icon" href="img/icon.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="./" aria-label="ひとやすみマップ トップ">
+    <img src="img/icon.jpg" alt="" width="44" height="44">
+    <span class="brand-text">
+      <span class="brand-name">ひとやすみマップ</span>
+      <span class="brand-sub">赤ちゃんとおでかけ中の、近くのひとやすみ</span>
+    </span>
+  </a>
+  <a class="top-link" href="#about">このサイトについて</a>
+</header>
+
+<main class="layout">
+  <section class="controls" aria-label="さがす">
+    <div class="search">
+      <button id="locate" class="btn primary" type="button">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="3.2" fill="currentColor"/><circle cx="12" cy="12" r="7.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 1.5v4M12 18.5v4M1.5 12h4M18.5 12h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        いまいる場所の近くをさがす
+      </button>
+      <form id="place-form" class="place" role="search">
+        <label class="sr" for="place">駅名・住所でさがす</label>
+        <input id="place" type="search" inputmode="search" autocomplete="off" placeholder="駅名・住所（例: 三軒茶屋駅）">
+        <button class="btn" type="submit">さがす</button>
+      </form>
+    </div>
+
+    <div class="filters">
+      <div class="chips" id="chips" role="group" aria-label="さがすもの"></div>
+      <div class="radius" role="group" aria-label="範囲">
+        <span class="radius-label">範囲</span>
+        <button type="button" class="seg" data-r="500">500m</button>
+        <button type="button" class="seg on" data-r="1000">1km</button>
+        <button type="button" class="seg" data-r="2000">2km</button>
+      </div>
+    </div>
+
+  </section>
+
+  <section class="results" aria-label="見つかった場所">
+    <p id="status" class="status" role="status" aria-live="polite">
+      「いまいる場所の近くをさがす」を押すか、駅名・住所を入れてください。地図を動かして「この場所でさがす」でも探せます。
+    </p>
+    <ol id="list" class="list"></ol>
+  </section>
+
+  <section class="mapwrap" aria-label="地図">
+    <div id="map"></div>
+    <button id="here" class="btn float" type="button" hidden>この場所でさがす</button>
+  </section>
+</main>
+
+<section id="about" class="about">
+  <h2>このサイトについて</h2>
+  <p>赤ちゃんや小さな子とのおでかけで、「授乳したい」「おむつを替えたい」「少し遊ばせたい」「座って食べたい」と思ったときに、近くの場所をすぐ探せるように作りました。登録もアプリも要りません。</p>
+
+  <h3>のっている場所</h3>
+  <ul>
+    <li><b>授乳・おむつ替え</b>：東京都に届出のある「赤ちゃん・ふらっと」（授乳やおむつ替えができるスペース。「女性のみ利用できる」と届出のある施設は、その旨を出します）と、OpenStreetMap に授乳室・おむつ替え台の登録がある場所。全国のデパート・ショッピングモール・ベビー用品店は「授乳室があることが多い場所」として、うすい色で出します。</li>
+    <li><b>遊び場</b>：公園の遊具広場、屋内の遊び場。</li>
+    <li><b>児童館・子育てひろば</b>：児童館、子育て支援センターなど。</li>
+    <li><b>子連れごはん</b>：子ども用のいすやキッズスペースの登録があるお店、フードコート、ファミリーレストラン・回転ずしのチェーン（子ども用のいすやメニューがあることが多い）。</li>
+    <li><b>トイレ（おむつ台）</b>：おむつ替え台の登録がある公共のトイレ。</li>
+  </ul>
+
+  <h3>おねがい</h3>
+  <ul>
+    <li>営業時間や設備は変わることがあります。行く前に、施設の案内でたしかめてください。</li>
+    <li>場所は番地までの位置で出しているため、建物の入口と少しずれることがあります。</li>
+    <li>「多い」と書いた場所は、設備があるとは限りません。</li>
+    <li>のっていない場所や、まちがいを見つけたら、<a href="https://www.openstreetmap.org/" target="_blank" rel="noopener">OpenStreetMap</a> に書き足すと、このサイトにも出るようになります（だれでも無料で直せる地図です）。</li>
+  </ul>
+
+  <h3>位置情報のあつかい</h3>
+  <p>いまいる場所は、近くの施設を探すために、地図データの検索サーバー（OpenStreetMap の Overpass API）へ座標だけを送ります。このサイトは、位置も、探した内容も、保存しません。アクセス解析や広告のしくみも入れていません。</p>
+
+  <h3>データの出どころ</h3>
+  <ul>
+    <li>東京都福祉局「<a href="https://www.fukushi.metro.tokyo.lg.jp/kodomo/kosodate/akachanflat" target="_blank" rel="noopener">赤ちゃん・ふらっと一覧</a>」（<span id="flat-date">令和8年10月28日</span>時点）を加工して作成。位置は国土地理院の住所検索で付けました。</li>
+    <li>地図と、遊び場・児童館・お店などの場所: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors（ODbL）。</li>
+  </ul>
+
+  <p class="made">つくった人: よるぱぱ（<a href="https://www.threads.com/@yourupapa_night" target="_blank" rel="noopener">Threads</a>）。夜と休日に育児をしている会社員です。</p>
+</section>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="app.js"></script>
+</body>
+</html>
