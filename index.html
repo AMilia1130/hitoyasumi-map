@@ -2,103 +2,73 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ひとやすみマップ｜近くの授乳室・おむつ替え・遊び場・子連れごはん</title>
-<meta name="description" content="赤ちゃんや小さな子とのおでかけ中に、いまいる場所の近くの授乳室・おむつ替えスペース・遊び場・児童館・子連れで入りやすい飲食店を地図で探せます。登録なし・無料。">
-<meta property="og:title" content="ひとやすみマップ｜近くの授乳室・遊び場をさがす">
-<meta property="og:description" content="赤ちゃんとのおでかけ中に、近くの授乳室・おむつ替え・遊び場・子連れごはんを地図で。登録なし・無料。">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ひとやすみマップ｜東京の授乳室・おむつ替え・ミルクのお湯・子連れごはん</title>
+<meta name="description" content="赤ちゃんとのおでかけ中に、いまいる場所の近くの授乳室・おむつ替え・ミルクのお湯・子連れごはん・遊び場を、地図ですぐ探せます。東京都内ぜんぶ。登録なし・無料・広告なし。">
+<meta property="og:title" content="ひとやすみマップ｜東京の授乳室・おむつ替えをすぐ探す">
+<meta property="og:description" content="赤ちゃんとおでかけ中の「いますぐ」に。近くの授乳室・おむつ替え・ミルクのお湯・子連れごはん・遊び場を地図で。登録なし・無料。">
 <meta property="og:type" content="website">
-<meta name="theme-color" content="#FBF6EC">
+<meta name="theme-color" content="#FAF7F2">
 <link rel="icon" href="img/icon.jpg">
+<link rel="apple-touch-icon" href="img/icon.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Zen+Maru+Gothic:wght@700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header class="top">
-  <a class="brand" href="./" aria-label="ひとやすみマップ トップ">
-    <img src="img/icon.jpg" alt="" width="44" height="44">
-    <span class="brand-text">
-      <span class="brand-name">ひとやすみマップ</span>
-      <span class="brand-sub">赤ちゃんとおでかけ中の、近くのひとやすみ</span>
-    </span>
-  </a>
-  <a class="top-link" href="#about">このサイトについて</a>
-</header>
+<div id="map" aria-label="地図"></div>
 
-<main class="layout">
-  <section class="controls" aria-label="さがす">
-    <div class="search">
-      <button id="locate" class="btn primary" type="button">
-        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="3.2" fill="currentColor"/><circle cx="12" cy="12" r="7.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 1.5v4M12 18.5v4M1.5 12h4M18.5 12h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        いまいる場所の近くをさがす
-      </button>
-      <form id="place-form" class="place" role="search">
-        <label class="sr" for="place">駅名・住所でさがす</label>
-        <input id="place" type="search" inputmode="search" autocomplete="off" placeholder="駅名・住所（例: 三軒茶屋駅）">
-        <button class="btn" type="submit">さがす</button>
-      </form>
-    </div>
+<div class="topbar">
+  <form id="place-form" class="searchbox" role="search">
+    <button type="button" id="about-btn" class="logo" aria-label="このサイトについて"><img src="img/icon.jpg" alt="" width="36" height="36"></button>
+    <label class="sr" for="place">駅名・住所でさがす</label>
+    <input id="place" type="search" enterkeyhint="search" autocomplete="off" placeholder="駅名・住所でさがす">
+    <button type="button" id="locate" class="locate" aria-label="現在地の近くをさがす">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M12 2.8v3.4M12 17.8v3.4M2.8 12h3.4M17.8 12h3.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="6" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="2.4" fill="currentColor"/></svg>
+    </button>
+  </form>
+  <div id="chips" class="chips" role="group" aria-label="さがしたいもの"></div>
+</div>
 
-    <div class="filters">
-      <div class="chips" id="chips" role="group" aria-label="さがすもの"></div>
-      <div class="radius" role="group" aria-label="範囲">
-        <span class="radius-label">範囲</span>
-        <button type="button" class="seg" data-r="500">500m</button>
-        <button type="button" class="seg on" data-r="1000">1km</button>
-        <button type="button" class="seg" data-r="2000">2km</button>
-      </div>
-    </div>
+<button id="here" class="here" type="button" hidden>このあたりでさがす</button>
 
-  </section>
+<section id="sheet" class="sheet" aria-live="polite">
+  <button id="grip" class="grip" type="button" aria-label="リストをひらく・とじる"><span></span></button>
+  <div id="sheet-body" class="sheet-body"></div>
+</section>
 
-  <section class="results" aria-label="見つかった場所">
-    <p id="status" class="status" role="status" aria-live="polite">
-      「いまいる場所の近くをさがす」を押すか、駅名・住所を入れてください。地図を動かして「この場所でさがす」でも探せます。
-    </p>
-    <ol id="list" class="list"></ol>
-  </section>
-
-  <section class="mapwrap" aria-label="地図">
-    <div id="map"></div>
-    <button id="here" class="btn float" type="button" hidden>この場所でさがす</button>
-  </section>
-</main>
-
-<section id="about" class="about">
-  <h2>このサイトについて</h2>
-  <p>赤ちゃんや小さな子とのおでかけで、「授乳したい」「おむつを替えたい」「少し遊ばせたい」「座って食べたい」と思ったときに、近くの場所をすぐ探せるように作りました。登録もアプリも要りません。</p>
+<dialog id="about" class="about">
+  <form method="dialog"><button class="close" aria-label="とじる">×</button></form>
+  <img src="img/icon.jpg" alt="" width="64" height="64" class="about-icon">
+  <h2>ひとやすみマップ</h2>
+  <p class="lead">赤ちゃんとおでかけ中の「いますぐ授乳したい」「おむつを替えたい」「お湯がほしい」に。東京都内の、近くのひとやすみできる場所をすぐ探せます。登録なし・無料・広告なし。</p>
 
   <h3>のっている場所</h3>
   <ul>
-    <li><b>授乳・おむつ替え</b>：東京都に届出のある「赤ちゃん・ふらっと」（授乳やおむつ替えができるスペース。「女性のみ利用できる」と届出のある施設は、その旨を出します）と、OpenStreetMap に授乳室・おむつ替え台の登録がある場所。全国のデパート・ショッピングモール・ベビー用品店は「授乳室があることが多い場所」として、うすい色で出します。</li>
-    <li><b>遊び場</b>：公園の遊具広場、屋内の遊び場。</li>
-    <li><b>児童館・子育てひろば</b>：児童館、子育て支援センターなど。</li>
-    <li><b>子連れごはん</b>：子ども用のいすやキッズスペースの登録があるお店、フードコート、ファミリーレストラン・回転ずしのチェーン（子ども用のいすやメニューがあることが多い）。</li>
-    <li><b>トイレ（おむつ台）</b>：おむつ替え台の登録がある公共のトイレ。</li>
+    <li><b>授乳・おむつ替え・ミルクのお湯</b>：東京都に届出のある「赤ちゃん・ふらっと」と、「子育て応援とうきょうパスポート」に協賛しているお店・施設。</li>
+    <li><b>おむつ替え</b>：乳幼児用の設備がある公衆トイレ（区市町村の公開データ）。</li>
+    <li><b>ごはん</b>：キッズスペース・おむつ替え・ベビーカーでの入店などに対応していると届出のある飲食店。</li>
+    <li><b>あそぶ・児童館</b>：公園、キッズスペースのある施設、児童館・子育てひろば。</li>
   </ul>
 
   <h3>おねがい</h3>
   <ul>
     <li>営業時間や設備は変わることがあります。行く前に、施設の案内でたしかめてください。</li>
     <li>場所は番地までの位置で出しているため、建物の入口と少しずれることがあります。</li>
-    <li>「多い」と書いた場所は、設備があるとは限りません。</li>
-    <li>のっていない場所や、まちがいを見つけたら、<a href="https://www.openstreetmap.org/" target="_blank" rel="noopener">OpenStreetMap</a> に書き足すと、このサイトにも出るようになります（だれでも無料で直せる地図です）。</li>
+    <li>公開データにない場所は、まだのっていません。「ここにもあるよ」という場所は、<a href="https://www.threads.com/@yourupapa_night" target="_blank" rel="noopener">Threads</a> で教えてください。施設の案内でたしかめてから足します。</li>
   </ul>
 
   <h3>位置情報のあつかい</h3>
-  <p>いまいる場所は、近くの施設を探すために、地図データの検索サーバー（OpenStreetMap の Overpass API）へ座標だけを送ります。このサイトは、位置も、探した内容も、保存しません。アクセス解析や広告のしくみも入れていません。</p>
+  <p>現在地は、この端末の中で「近い順」に並べるためだけに使います。どこにも送らず、保存もしません。アクセス解析や広告も入れていません。駅名・住所でさがすときだけ、入力した文字を地図の検索サービス（OpenStreetMap Nominatim／国土地理院）に送ります。</p>
 
   <h3>データの出どころ</h3>
-  <ul>
-    <li>東京都福祉局「<a href="https://www.fukushi.metro.tokyo.lg.jp/kodomo/kosodate/akachanflat" target="_blank" rel="noopener">赤ちゃん・ふらっと一覧</a>」（<span id="flat-date">令和8年10月28日</span>時点）を加工して作成。位置は国土地理院の住所検索で付けました。</li>
-    <li>地図と、遊び場・児童館・お店などの場所: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors（ODbL）。</li>
-  </ul>
+  <ul id="sources"><li>読みこみ中…</li></ul>
+  <p class="small">各データはクリエイティブ・コモンズ 表示（CC BY）で公開されているものを加工して作成しました。位置は国土地理院の住所検索で付けています。地図: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors。<span id="data-date"></span></p>
 
-  <p class="made">つくった人: よるぱぱ（<a href="https://www.threads.com/@yourupapa_night" target="_blank" rel="noopener">Threads</a>）。夜と休日に育児をしている会社員です。</p>
-</section>
+  <p class="made">つくった人: よるぱぱ（<a href="https://www.threads.com/@yourupapa_night" target="_blank" rel="noopener">Threads</a>・<a href="https://www.instagram.com/yourupapa_night/" target="_blank" rel="noopener">Instagram</a>）。夜と休日に育児をしている会社員です。</p>
+</dialog>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script src="app.js"></script>
