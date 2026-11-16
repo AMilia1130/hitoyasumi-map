@@ -57,7 +57,7 @@
   function fmt(m) { return m < 1000 ? Math.max(10, Math.round(m / 10) * 10) + "m" : (m / 1000).toFixed(1) + "km"; }
   function walk(m) { return "徒歩" + Math.max(1, Math.round(m / 67)) + "分"; }      // 子連れのゆっくりめ（分速67m）
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
-  function matches(p, id) { return id === "play" ? (p.c === "play" || p.f.indexOf("kids") >= 0) : (id === "food" || id === "jido") ? p.c === id : p.f.indexOf(id) >= 0; }
+  function matches(p, id) { return (id === "food" || id === "jido" || id === "play") ? p.c === id : p.f.indexOf(id) >= 0; }
   function mainNeed(p) {   // 選んでいる「さがしたいもの」のうち、この場所が当てはまる最初のもの（ピンの色）
     for (var i = 0; i < NEEDS.length; i++) if (NEEDS[i].on && matches(p, NEEDS[i].id)) return NEEDS[i];
     return NEED[p.c] || NEEDS[0];
