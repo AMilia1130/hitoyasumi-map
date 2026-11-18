@@ -77,9 +77,20 @@
     document.documentElement.style.setProperty("--sheet-h", (wide.matches ? 0 : sheet.getBoundingClientRect().height) + "px");
   }
 
+  /* ---------- あると助かるもの（楽天の紹介リンク。詳しい画面の下に小さく2つまで） ---------- */
+  var picks = {};
+  fetch("data/picks.json?v=1").then(function (r) { return r.ok ? r.json() : {}; }).then(function (js) { picks = js || {}; }).catch(function () {});
+  function picksHtml(p) {
+    var list = picks[p.f.indexOf("junyu") >= 0 ? "junyu" : p.f.indexOf("omutsu") >= 0 ? "omutsu" : p.f.indexOf("oyu") >= 0 ? "oyu" : p.c] || [];
+    if (!list.length) return "";
+    return '<section class="picks"><h3>おでかけに、あると助かるもの</h3><div class="pick-row">' + list.slice(0, 2).map(function (x) {
+      return '<a class="pick" href="' + esc(x.u) + '" target="_blank" rel="noopener sponsored"><img src="' + esc(x.img) + '" alt="" loading="lazy"><span>' + esc(x.n) + "<small>楽天市場で見る</small></span></a>";
+    }).join("") + '</div><p class="aff">楽天市場の紹介リンクです。ここから買うと、運営者に紹介料が入ります。</p></section>';
+  }
+
   /* ---------- データ ---------- */
   // 古いデータが残らないように、毎回サーバーに確かめる（cache: "no-cache"）
-  var loading = fetch("data/tokyo.json?v=5", { cache: "no-cache" }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }).then(function (js) {
+  var loading = fetch("data/tokyo.json?v=6", { cache: "no-cache" }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }).then(function (js) {
     st.places = js.places; st.sources = js.sources; st.date = js.date;
     js.places.forEach(function (p, i) {
       p.i = i;
@@ -147,7 +158,8 @@
     var count = st.ready ? "東京都内 " + st.places.length.toLocaleString() + " か所" : st.failed ? "" : "データを読みこんでいます…";
     body.innerHTML = '<div class="hello"><h2>いま、どこにいますか？</h2><p>近くの授乳室・おむつ替え・ミルクのお湯をすぐ出します。' + (count ? "<br>" + count : "") + "</p>" +
       '<button class="big" id="big-loc" type="button">' + I.pin + "現在地の近くをさがす</button>" +
-      '<div class="areas">' + AREAS.map(function (a, i) { return '<button type="button" data-a="' + i + '">' + a[0] + "</button>"; }).join("") + "</div></div>" +
+      '<div class="areas">' + AREAS.map(function (a, i) { return '<button type="button" data-a="' + i + '">' + a[0] + "</button>"; }).join("") +
+      '<a class="more-areas" href="areas.html">ほかの駅・区市町村 →</a></div></div>' +
       (msg ? '<p class="note err">' + esc(msg) + "</p>" : "") +
       (st.failed ? '<p class="note err">データを読みこめませんでした。電波のよいところで、ページを開き直してください。</p>' : "");
     $("big-loc").onclick = locate;
@@ -258,6 +270,7 @@
       (p.u ? '<a href="' + esc(p.u) + '" target="_blank" rel="noopener">公式サイト</a>' : "") +
       (p.tel ? '<a href="tel:' + esc(p.tel) + '">電話する</a>' : "") +
       '<button type="button" id="share">場所を共有</button></div>' +
+      picksHtml(p) +
       '<p class="source">出どころ: ' + esc(st.sources[p.src] || "") + "。設備や時間は変わることがあります。行く前にたしかめてください。" +
       (p.o ? ' <a href="https://www.openstreetmap.org/' + ({ n: "node", w: "way", r: "relation" })[p.o[0]] + "/" + p.o.slice(1) + '" target="_blank" rel="noopener">情報を直す</a>' : "") + "</p></div>";
     body.scrollTop = 0;

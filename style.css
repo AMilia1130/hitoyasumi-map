@@ -128,6 +128,7 @@ a { color: var(--accent); }
 .big svg { width: 20px; height: 20px; }
 .areas { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 12px; }
 .areas button { border: 0; background: var(--card); border-radius: 999px; padding: 7px 13px; font-weight: 700; font-size: 13.5px; color: var(--ink); box-shadow: 0 1px 3px rgba(42, 37, 34, .08); }
+.more-areas { align-self: center; font-weight: 700; font-size: 13.5px; color: var(--accent); text-decoration: none; padding: 7px 4px; }
 .note { color: var(--ink-2); font-size: 13.5px; padding: 6px 18px 10px; margin: 0; }
 .note.err { color: #B4391F; }
 
@@ -156,6 +157,13 @@ a { color: var(--accent); }
 .actions a, .actions button { text-decoration: none; text-align: center; border-radius: 14px; padding: 12px 8px; font-weight: 700; font-size: 14.5px; border: 0; background: var(--card); color: var(--ink); }
 .actions .go { grid-column: 1 / -1; background: var(--ink); color: #fff; }
 .actions .photos { grid-column: 1 / -1; background: color-mix(in srgb, var(--accent) 12%, #fff); color: #B4452E; }
+.picks { margin: 22px 0 0; padding-top: 16px; border-top: 1px solid var(--line); }
+.picks h3 { font-size: 13.5px; margin: 0 0 10px; color: var(--ink-2); font-weight: 700; }
+.pick-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.pick { display: flex; gap: 10px; align-items: center; background: var(--card); border-radius: 14px; padding: 8px; text-decoration: none; color: var(--ink); font-size: 12.5px; font-weight: 700; line-height: 1.4; }
+.pick img { width: 48px; height: 48px; border-radius: 10px; object-fit: cover; flex: none; background: #F3EEE7; }
+.pick small { display: block; font-weight: 500; color: var(--ink-3); font-size: 11px; margin-top: 2px; }
+.aff { font-size: 11px; color: var(--ink-3); margin: 8px 0 0; }
 .source { margin: 14px 0 0; font-size: 11.5px; color: var(--ink-3); }
 
 /* ---------- このサイトについて ---------- */
