@@ -24,13 +24,8 @@
   var NEED = {};
   NEEDS.forEach(function (n) { NEED[n.id] = n; });
   var FEAT = { junyu: "授乳", omutsu: "おむつ替え", oyu: "お湯", kids: "キッズスペース", bcar: "ベビーカーOK" };
-  // 写真のない場所は、種類ごとのイメージイラスト（実際の施設ではない）を出す
-  function pic(p) {
-    if (p.img) return { src: p.img[0], real: true };
-    var k = p.c === "play" && /キッズ|遊び場|屋内/.test(p.t || "") && !/公園|広場/.test(p.t || "") ? "kids" : p.c;
-    if (!/^(junyu|omutsu|oyu|food|play|jido|kids)$/.test(k)) k = "junyu";
-    return { src: "img/map_" + k + ".webp", real: false };
-  }
+  // 本物の写真（自由に使えるよう公開されているもの・出典つき）がある場所だけ写真を出す。イラストは使わない（11/18 ユーザー）
+  function pic(p) { return p.img ? { src: p.img[0], real: true } : null; }
   var AREAS = [["渋谷", 35.6581, 139.7017], ["新宿", 35.6896, 139.7006], ["池袋", 35.7295, 139.7109], ["銀座", 35.6717, 139.7650],
     ["六本木", 35.6628, 139.7314], ["二子玉川", 35.6116, 139.6266], ["自由が丘", 35.6076, 139.6688], ["吉祥寺", 35.7031, 139.5798],
     ["上野", 35.7138, 139.7773], ["豊洲", 35.6549, 139.7965], ["立川", 35.6979, 139.4138], ["町田", 35.5420, 139.4455]];
@@ -84,7 +79,7 @@
 
   /* ---------- データ ---------- */
   // 古いデータが残らないように、毎回サーバーに確かめる（cache: "no-cache"）
-  var loading = fetch("data/tokyo.json?v=4", { cache: "no-cache" }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }).then(function (js) {
+  var loading = fetch("data/tokyo.json?v=5", { cache: "no-cache" }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }).then(function (js) {
     st.places = js.places; st.sources = js.sources; st.date = js.date;
     js.places.forEach(function (p, i) {
       p.i = i;
@@ -174,7 +169,9 @@
     html += '<ol class="cards" id="cards">' + st.results.map(function (p) {
       var n = mainNeed(p);
       var ph = pic(p);
-      return '<li><button type="button" class="card" data-i="' + p.i + '" style="--c:' + n.color + '"><span class="thumb"><img src="' + esc(ph.src) + '" alt="" loading="lazy" decoding="async"><span class="ico">' + I[n.id] + "</span></span>" +
+      var thumb = ph ? '<span class="thumb"><img src="' + esc(ph.src) + '" alt="" loading="lazy" decoding="async"><span class="ico">' + I[n.id] + "</span></span>"
+                     : '<span class="thumb none"><span class="big-ico">' + I[n.id] + "</span></span>";
+      return '<li><button type="button" class="card" data-i="' + p.i + '" style="--c:' + n.color + '">' + thumb +
         '<span class="name">' + esc(p.n) + '</span><span class="sub"><b>' + fmt(p.d) + "</b>・" + walk(p.d) + (p.h ? "　" + esc(p.h) : "") + "</span>" +
         '<span class="tags">' + tagsHtml(p) + "</span></button></li>";
     }).join("") + "</ol>";
@@ -248,17 +245,16 @@
     if (p.m && p.m.length) rows.push(["メモ", p.m.map(esc).join("<br>")]);
     var gmap = "https://www.google.com/maps/dir/?api=1&destination=" + p.lat + "," + p.lng + "&travelmode=walking";
     var ph = pic(p);
-    var credit = ph.real ? '写真: <a href="' + esc(p.img[3]) + '" target="_blank" rel="noopener">' + esc(p.img[1]) + "</a>（" + esc(p.img[2]) + "・ウィキメディア・コモンズ）"
-                         : "イメージです。実際の施設のようすとはちがいます";
     var gphoto = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(p.n + " " + (p.a || "").split(" ")[0]);
     body.innerHTML = '<div class="detail"><button class="back" id="back" type="button">← もどる</button>' +
-      '<figure class="hero' + (ph.real ? " real" : "") + '"><img src="' + esc(ph.src) + '" alt="' + (ph.real ? esc(p.n) + "の写真" : "イメージ") + '"><figcaption>' + credit + "</figcaption></figure>" +
+      (ph ? '<figure class="hero"><img src="' + esc(ph.src) + '" alt="' + esc(p.n) + 'の写真"><figcaption>写真: <a href="' + esc(p.img[3]) + '" target="_blank" rel="noopener">' + esc(p.img[1]) + "</a>（" + esc(p.img[2]) + "・ウィキメディア・コモンズ）" + (p.img[4] ? "。" + esc(p.img[4]) : "") + "</figcaption></figure>"
+          : '<a class="nophoto" href="' + gphoto + '" target="_blank" rel="noopener">' + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="3"/><circle cx="12" cy="12.5" r="3.6"/><path d="M8.5 6l1.5-2.2h4L15.5 6"/></svg><span>実際の写真を見る<small>Googleマップで開きます</small></span></a>') +
       "<h2>" + esc(p.n) + '</h2><p class="kind">' + esc(p.t || n.label) + "</p>" +
       (d != null ? '<p class="dist">' + fmt(d) + "・" + walk(d) + "</p>" : "") +
       (feats.length || p.w ? '<ul class="feats">' + (p.w ? '<li class="warn">女性のみ利用できる</li>' : "") + feats.map(function (f) { return '<li style="--c:' + col[f] + '">' + ico[f] + full[f] + "</li>"; }).join("") + "</ul>" : "") +
       (rows.length ? '<dl class="rows">' + rows.map(function (r) { return "<div><dt>" + r[0] + "</dt><dd>" + r[1] + "</dd></div>"; }).join("") + "</dl>" : "") +
       '<div class="actions"><a class="go" href="' + gmap + '" target="_blank" rel="noopener">ここへの道順（Googleマップ）</a>' +
-      '<a class="photos" href="' + gphoto + '" target="_blank" rel="noopener">実際の写真を見る（Googleマップ）</a>' +
+      (ph ? '<a class="photos" href="' + gphoto + '" target="_blank" rel="noopener">ほかの写真を見る（Googleマップ）</a>' : "") +
       (p.u ? '<a href="' + esc(p.u) + '" target="_blank" rel="noopener">公式サイト</a>' : "") +
       (p.tel ? '<a href="tel:' + esc(p.tel) + '">電話する</a>' : "") +
       '<button type="button" id="share">場所を共有</button></div>' +

@@ -103,6 +103,11 @@ a { color: var(--accent); }
 .card.sel { border-color: var(--c); }
 .card .thumb { grid-row: 1 / span 3; position: relative; width: 64px; height: 64px; align-self: start; }
 .card .thumb img { width: 64px; height: 64px; border-radius: 14px; object-fit: cover; display: block; background: #EFE9E0; }
+.card .thumb.none { width: 64px; height: 64px; border-radius: 14px; background: color-mix(in srgb, var(--c) 12%, #fff); color: var(--c); display: grid; place-items: center; }
+.card .thumb.none .big-ico svg { width: 28px; height: 28px; display: block; }
+.sheet.peek .card .thumb.none, .sheet.peek .card .thumb { width: 52px; height: 52px; }
+.sheet.peek .card .thumb img { width: 52px; height: 52px; }
+.sheet.peek .card { grid-template-columns: 52px 1fr; }
 .card .ico { position: absolute; right: -5px; bottom: -5px; width: 24px; height: 24px; border-radius: 50%; background: var(--c); color: #fff; display: grid; place-items: center; border: 2px solid #fff; }
 .card .ico svg { width: 13px; height: 13px; }
 .card .name { font-weight: 700; font-size: 15.5px; line-height: 1.35; margin: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
@@ -133,6 +138,9 @@ a { color: var(--accent); }
 .hero img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; border-radius: 18px; display: block; background: #EFE9E0; }
 .hero figcaption { font-size: 11.5px; color: var(--ink-3); margin-top: 6px; }
 .hero figcaption a { color: inherit; }
+.nophoto { display: flex; align-items: center; gap: 12px; margin: 0 0 14px; padding: 14px 16px; border-radius: 18px; background: var(--card); text-decoration: none; color: var(--ink); font-weight: 700; font-size: 15px; box-shadow: 0 1px 4px rgba(42, 37, 34, .06); }
+.nophoto svg { width: 28px; height: 28px; color: var(--accent); flex: none; }
+.nophoto small { display: block; font-weight: 500; font-size: 12px; color: var(--ink-2); }
 .detail h2 { font-size: 20px; line-height: 1.35; margin: 0 0 2px; font-weight: 700; }
 .detail .kind { margin: 0; color: var(--ink-2); font-size: 13.5px; }
 .detail .dist { margin: 8px 0 0; font-weight: 700; font-size: 15px; }
