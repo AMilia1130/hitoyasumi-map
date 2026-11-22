@@ -72,6 +72,60 @@
     if (wide.matches) return { top: 30, bottom: 30 };
     return { top: document.querySelector(".topbar").getBoundingClientRect().bottom + 16, bottom: sheet.getBoundingClientRect().height + 16 };
   }
+  /* ---------- 下の板（スマホ）: 指で上下に引いて3段階に止まる（11/23 ユーザー「スクロールできない・操作性」） ---------- */
+  var SNAP = [0.28, 0.52, 0.9];
+  st.snap = 1;
+  function setSnap(i, instant) {
+    st.snap = Math.max(0, Math.min(2, i));
+    if (wide.matches) { sheet.style.height = ""; layout(); return; }
+    sheet.style.transition = instant ? "none" : "";
+    sheet.style.height = Math.round(window.innerHeight * SNAP[st.snap]) + "px";
+    var tg = $("toggle");
+    if (tg) tg.textContent = st.snap >= 2 ? "地図を見る" : "一覧を広げる";
+    setTimeout(layout, 260);
+  }
+  (function dragSheet() {
+    var y0 = 0, h0 = 0, t0 = 0, dragging = false, fromBody = false;
+    function start(e, inBody) {
+      if (wide.matches) return;
+      fromBody = inBody;
+      y0 = e.touches[0].clientY; h0 = sheet.getBoundingClientRect().height; t0 = Date.now(); dragging = !inBody;
+    }
+    function move(e) {
+      if (wide.matches) return;
+      var dy = e.touches[0].clientY - y0;
+      // 一覧の中: いちばん上までスクロールしていて、下へ引いたときだけ板を動かす
+      if (fromBody && !dragging) {
+        if (body.scrollTop <= 0 && dy > 8 && st.snap > 0) { dragging = true; y0 = e.touches[0].clientY; h0 = sheet.getBoundingClientRect().height; dy = 0; }
+        else return;
+      }
+      if (!dragging) return;
+      e.preventDefault();
+      var h = Math.max(window.innerHeight * 0.18, Math.min(window.innerHeight * 0.94, h0 - dy));
+      sheet.style.transition = "none";
+      sheet.style.height = h + "px";
+    }
+    function end(e) {
+      if (!dragging) return;
+      dragging = false;
+      var h = sheet.getBoundingClientRect().height / window.innerHeight;
+      var y1 = (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0].clientY : y0;
+      var v = (y0 - y1) / Math.max(1, Date.now() - t0);   // 上向きが正（px/ms）
+      var best = 0;
+      SNAP.forEach(function (s, i) { if (Math.abs(s - h) < Math.abs(SNAP[best] - h)) best = i; });
+      if (v > 0.5) best = Math.min(2, Math.max(best, st.snap + 1));
+      if (v < -0.5) best = Math.max(0, Math.min(best, st.snap - 1));
+      setSnap(best);
+    }
+    sheet.addEventListener("touchstart", function (e) {
+      if (e.target.closest("#grip") || e.target.closest(".head")) start(e, false);
+      else if (e.target.closest("#sheet-body")) start(e, true);
+    }, { passive: true });
+    sheet.addEventListener("touchmove", move, { passive: false });
+    sheet.addEventListener("touchend", end);
+    sheet.addEventListener("touchcancel", end);
+  })();
+
   function layout() {
     document.documentElement.style.setProperty("--top-h", document.querySelector(".topbar").getBoundingClientRect().height + "px");
     document.documentElement.style.setProperty("--sheet-h", (wide.matches ? 0 : sheet.getBoundingClientRect().height) + "px");
@@ -90,7 +144,7 @@
 
   /* ---------- データ ---------- */
   // 古いデータが残らないように、毎回サーバーに確かめる（cache: "no-cache"）
-  var loading = fetch("data/tokyo.json?v=6", { cache: "no-cache" }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }).then(function (js) {
+  var loading = fetch("data/tokyo.json?v=9", { cache: "no-cache" }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }).then(function (js) {
     st.places = js.places; st.sources = js.sources; st.date = js.date;
     js.places.forEach(function (p, i) {
       p.i = i;
@@ -122,7 +176,7 @@
       st.view = "hello"; renderHello("いまは東京都内だけに対応しています。都内の駅名・住所でさがしてください。");
       return;
     }
-    st.center = c; st.label = label || ""; st.sel = null; st.full = false; hereBtn.hidden = true;
+    st.center = c; st.label = label || ""; st.sel = null; hereBtn.hidden = true;
     loading.then(function () {
       dots.clearLayers(); meLayer.clearLayers();
       L.marker([c.lat, c.lng], { icon: L.divIcon({ className: "", html: '<span class="me"></span>', iconSize: [18, 18], iconAnchor: [9, 9] }), interactive: false, keyboard: false }).addTo(meLayer);
@@ -154,6 +208,7 @@
   }
   function renderHello(msg) {
     st.view = "hello"; sheet.className = "sheet";
+    if (!wide.matches) setSnap(1, true);
     pins.clearLayers(); markers = {};
     var count = st.ready ? "東京都内 " + st.places.length.toLocaleString() + " か所" : st.failed ? "" : "データを読みこんでいます…";
     body.innerHTML = '<div class="hello"><h2>いま、どこにいますか？</h2><p>近くの授乳室・おむつ替え・ミルクのお湯をすぐ出します。' + (count ? "<br>" + count : "") + "</p>" +
@@ -171,12 +226,12 @@
   }
   function renderResults(refit) {
     st.view = "results";
-    sheet.className = "sheet " + (st.full ? "full" : "peek");
+    sheet.className = "sheet";
     pins.clearLayers(); markers = {};
     var names = NEEDS.filter(function (n) { return n.on; }).map(function (n) { return n.label; });
     var where = st.label ? esc(st.label) + "のまわり" : "このあたり";
     var html = '<div class="head"><h2>' + where + "<small>" + (st.results.length ? fmt(st.radius) + "以内・" + st.total + "件" + (st.total > 60 ? "（近い順に60件）" : "") : names.join("・")) + "</small></h2>" +
-      (st.results.length ? '<button class="toggle" id="toggle" type="button">' + (st.full ? "地図を見る" : "リストで見る") + "</button>" : "") + "</div>";
+      (st.results.length ? '<button class="toggle" id="toggle" type="button">' + (st.snap >= 2 ? "地図を見る" : "一覧を広げる") + "</button>" : "") + "</div>";
     if (!names.length) html += '<p class="note">上の「授乳」「おむつ替え」などから、さがしたいものを選んでください。</p>';
     else if (!st.results.length) html += '<p class="note">' + fmt(RADII[RADII.length - 1]) + "以内には見つかりませんでした。さがしたいものを足すか、場所を変えてみてください。</p>";
     html += '<ol class="cards" id="cards">' + st.results.map(function (p) {
@@ -196,16 +251,15 @@
       m.addTo(pins); markers[p.i] = m;
     });
     var tg = $("toggle");
-    if (tg) tg.onclick = function () { st.full = !st.full; renderResults(false); };
+    if (tg) tg.onclick = function () { setSnap(st.snap >= 2 ? 0 : 2); };
     var cards = $("cards");
     Array.prototype.forEach.call(cards.querySelectorAll(".card"), function (b) {
       b.onclick = function () { openDetail(st.places[b.dataset.i]); };
       b.onmouseenter = function () { if (wide.matches) select(Number(b.dataset.i), false); };
     });
-    if (!wide.matches && !st.full) watchCarousel(cards);
     layout();
     if (refit) fit();
-    if (st.results.length && !wide.matches && !st.full) select(st.results[0].i, false);
+    if (refit && !wide.matches) setSnap(1, true);
   }
   function fit() {
     var pts = st.results.slice(0, 12).map(function (p) { return [p.lat, p.lng]; });
@@ -228,23 +282,9 @@
     var target = L.point(size.x / 2, ins.top + (size.y - ins.top - ins.bottom) / 2);
     if (pt.x < 30 || pt.x > size.x - 30 || pt.y < ins.top || pt.y > size.y - ins.bottom) map.panBy(pt.subtract(target), { animate: true, duration: .35 });
   }
-  var carT = null;
-  function watchCarousel(cards) {   // 横にめくると、まん中のカードの場所が地図で選ばれる
-    cards.addEventListener("scroll", function () {
-      clearTimeout(carT);
-      carT = setTimeout(function () {
-        var mid = cards.scrollLeft + cards.clientWidth / 2, best = null, bd = 1e9;
-        Array.prototype.forEach.call(cards.querySelectorAll(".card"), function (b) {
-          var d = Math.abs(b.offsetLeft + b.offsetWidth / 2 - mid);
-          if (d < bd) { bd = d; best = b; }
-        });
-        if (best && Number(best.dataset.i) !== st.sel) select(Number(best.dataset.i), true);
-      }, 90);
-    }, { passive: true });
-  }
-
   function openDetail(p) {
-    st.view = "detail"; sheet.className = "sheet full"; hereBtn.hidden = true;
+    st.view = "detail"; sheet.className = "sheet"; hereBtn.hidden = true;
+    if (!wide.matches && st.snap < 1) setSnap(1, true);
     select(p.i, false);
     var n = mainNeed(p), d = st.center ? dist(st.center, p) : null;
     var feats = ["junyu", "omutsu", "oyu", "kids", "bcar"].filter(function (f) { return p.f.indexOf(f) >= 0; });
@@ -295,7 +335,7 @@
     b.innerHTML = I[n.id] + esc(n.label);
     b.onclick = function () {
       n.on = !n.on; b.setAttribute("aria-pressed", String(n.on));
-      if (st.center) { compute(); st.full = st.full && st.results.length > 0; renderResults(true); }
+      if (st.center) { compute(); renderResults(true); }
     };
     chips.appendChild(b);
   });
@@ -312,7 +352,10 @@
   }
   locateBtn.onclick = locate;
   hereBtn.onclick = function () { var c = map.getCenter(); search({ lat: c.lat, lng: c.lng }, ""); };
-  $("grip").onclick = function () { if (st.view === "results" && st.results.length) { st.full = !st.full; renderResults(false); } };
+  $("grip").onclick = function () { setSnap(st.snap >= 2 ? 1 : st.snap + 1); };
+  // 地図を触ったら板を下げて、地図を広く見せる
+  map.on("click", function () { if (!wide.matches && st.view !== "hello") setSnap(0); });
+  window.addEventListener("resize", function () { if (!wide.matches) setSnap(st.snap, true); else sheet.style.height = ""; });
   $("about-btn").onclick = function () { $("about").showModal(); };
   $("about").addEventListener("click", function (e) { if (e.target === $("about")) $("about").close(); });
   $("place-form").addEventListener("submit", function (e) {
