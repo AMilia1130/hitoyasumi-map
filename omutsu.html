@@ -51,7 +51,7 @@
 <header class="ph"><a href="./" class="brand"><img src="img/icon.jpg" alt="" width="34" height="34">ひとやすみマップ</a></header>
 <main class="pm">
   <h1>おむつの値段くらべ</h1>
-  <p class="lead">1枚あたりいくらかで、安い順に並べます。楽天市場・西松屋・アカチャンホンポ（どちらもネット通販）の値段を、送料を入れて比べています。</p>
+  <p class="lead">1枚あたりいくらかで、安い順に並べます。楽天市場・西松屋・アカチャンホンポ（ネット通販）の商品の値段で比べています。送料は別に書いています。</p>
   <p class="upd" id="upd">読みこみ中…</p>
 
   <div class="grp"><p class="grp-l">サイズ</p><div class="seg" id="sizes"></div></div>
@@ -67,7 +67,7 @@
     <div class="links" id="links"></div>
   </section>
 
-  <p class="note">値段は1日に数回、自動で取りなおしています（ページ上の時刻）。値段・在庫・ポイントは変わることがあるので、買う前に店のページでたしかめてください。1枚あたりの値段は「値段 ÷ 枚数」で、ポイントは入れていません。楽天市場は送料込みの商品だけ、アカチャンホンポは紙おむつの送料（1ケース330円）、西松屋は紙おむつの送料（1ケース690円）を足して計算しています。西松屋でネット在庫がないものは、店頭の目安として送料なしで出しています。商品名から枚数が読み取れないもの・サイズを選ぶ形のもの・在庫なしはのせていません。<br>
+  <p class="note">値段は1日に数回、自動で取りなおしています（ページ上の時刻）。値段・在庫・ポイントは変わることがあるので、買う前に店のページでたしかめてください。1枚あたりの値段は「商品の値段 ÷ 枚数」で、送料とポイントは入れていません。送料は商品ごとに別に書いています（アカチャンホンポ・西松屋の紙おむつは1ケースごとの送料、楽天市場は送料無料か店ごと）。西松屋でネット在庫がないものも、店頭の値段の目安としてのせています。商品名から枚数が読み取れないもの・サイズを選ぶ形のもの・在庫なしはのせていません。<br>
   楽天市場の商品は紹介リンクです。ここから買うと、運営者に紹介料が入ります。紹介料は並び順には関係しません。</p>
 </main>
 <footer class="pf"><p><a href="./">地図でさがす（授乳室・おむつ替え）</a> ・ <a href="areas.html">エリアからさがす</a></p></footer>
@@ -88,6 +88,11 @@
       b.onclick = function () { st[key] = x[0]; if (key === "type" && x[0] === "pants" && (st.size === "nb" || st.size === "s")) st.size = "m"; save(); draw(); };
       el.appendChild(b);
     });
+  }
+  function shipText(o) {
+    if (o.ship === 0) return "送料無料";
+    if (o.ship == null) return "送料は店による";
+    return "送料" + o.ship + "円（1ケース）";
   }
   function save() { try { localStorage.setItem("omutsu", JSON.stringify(st)); } catch (e) { /* なくてよい */ } }
 
@@ -112,7 +117,7 @@
       return '<li><a class="offer' + (i === 0 ? " top" : "") + '" href="' + esc(o.u) + '" target="_blank" rel="noopener' + (o.store === "rakuten" || !o.store ? " sponsored" : "") + '">' +
         '<span class="b">' + esc(bn[o.brand]) + (i === 0 ? '<span class="best">いちばん安い</span>' : "") + "</span>" +
         '<span class="nm">' + esc(o.n) + "</span>" +
-        '<span class="sh"><span class="store ' + esc(o.store || "rakuten") + '">' + esc((D.stores || {})[o.store || "rakuten"] || "楽天市場") + "</span>" + (o.store === "akachan" ? "送料330円込み" : o.store === "nishimatsuya" ? (o.stock ? "送料690円込み" : "ネットは在庫なし・店頭の目安") : esc(o.shop)) + (o.pt > 1 ? "・ポイント" + o.pt + "倍" : "") + "</span>" +
+        '<span class="sh"><span class="store ' + esc(o.store || "rakuten") + '">' + esc((D.stores || {})[o.store || "rakuten"] || "楽天市場") + "</span>" + (o.store === "rakuten" || !o.store ? esc(o.shop) + "・" : "") + shipText(o) + (o.store === "nishimatsuya" && !o.stock ? "・ネットは在庫なし" : "") + (o.pt > 1 ? "・ポイント" + o.pt + "倍" : "") + "</span>" +
         '<span class="per"><b>' + o.per.toFixed(1) + "円</b><small>1枚あたり</small><small>" + o.price.toLocaleString() + "円／" + o.sheets + "枚</small></span>" +
         '<span class="go">' + (o.store === "akachan" ? "アカチャンホンポで見る →" : o.store === "nishimatsuya" ? "西松屋で見る →" : "楽天市場で見る →") + "</span></a></li>";
     }).join("") : '<li class="empty">この組み合わせは、いま比べられる商品がありませんでした。サイズかブランドを変えてみてください。</li>';
