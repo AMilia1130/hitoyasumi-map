@@ -39,6 +39,9 @@
   .others p { margin: 0 0 10px; font-size: 12.5px; color: var(--ink-2); }
   .others .links { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .others a { display: block; text-align: center; padding: 11px 6px; border-radius: 12px; background: #F3EEE7; color: var(--ink); text-decoration: none; font-weight: 700; font-size: 13.5px; }
+  .store { display: inline-block; font-size: 10.5px; font-weight: 700; padding: 1px 7px; border-radius: 999px; margin-right: 6px; background: #F3EEE7; color: var(--ink-2); }
+  .store.rakuten { background: #FBE5E1; color: #B0352A; }
+  .store.akachan { background: #E3EEF9; color: #2C5F99; }
   .note { font-size: 12px; color: var(--ink-3); margin: 18px 0 0; line-height: 1.7; }
   .empty { background: var(--card); border-radius: 16px; padding: 16px; color: var(--ink-2); font-size: 14px; }
 </style>
@@ -47,23 +50,23 @@
 <header class="ph"><a href="./" class="brand"><img src="img/icon.jpg" alt="" width="34" height="34">ひとやすみマップ</a></header>
 <main class="pm">
   <h1>おむつの値段くらべ</h1>
-  <p class="lead">1枚あたりいくらかで、安い順に並べます。送料込みの商品だけを比べています。</p>
+  <p class="lead">1枚あたりいくらかで、安い順に並べます。楽天市場とアカチャンホンポ（ネット通販）の値段を、送料を入れて比べています。</p>
   <p class="upd" id="upd">読みこみ中…</p>
 
   <div class="grp"><p class="grp-l">サイズ</p><div class="seg" id="sizes"></div></div>
   <div class="grp"><p class="grp-l">タイプ</p><div class="seg" id="types"></div></div>
   <div class="grp"><p class="grp-l">ブランド</p><div class="seg" id="brands"></div></div>
 
-  <div class="res-h"><h2 id="res-title">楽天市場の安い順</h2><span id="res-count"></span></div>
+  <div class="res-h"><h2 id="res-title">安い順</h2><span id="res-count"></span></div>
   <ol class="offers" id="offers"></ol>
 
   <section class="others">
     <h2>ほかの店でも見る</h2>
-    <p>この4つの店の値段は自動では取れないため、店のページで確かめてください（同じ条件で検索したページが開きます）。</p>
+    <p>この店の値段は自動では取っていないので、店のページで確かめてください（同じ条件で検索したページが開きます）。</p>
     <div class="links" id="links"></div>
   </section>
 
-  <p class="note">楽天市場の値段は1日に数回、自動で取りなおしています（ページ上の時刻）。値段・在庫・ポイントは変わることがあるので、買う前に店のページでたしかめてください。1枚あたりの値段は「値段 ÷ 枚数」で、ポイントは入れていません。商品名から枚数が読み取れないもの・サイズを選ぶ形のものはのせていません。<br>
+  <p class="note">値段は1日に数回、自動で取りなおしています（ページ上の時刻）。値段・在庫・ポイントは変わることがあるので、買う前に店のページでたしかめてください。1枚あたりの値段は「値段 ÷ 枚数」で、ポイントは入れていません。楽天市場は送料込みの商品だけ、アカチャンホンポは紙おむつの送料（1ケース330円）を足して計算しています。商品名から枚数が読み取れないもの・サイズを選ぶ形のもの・在庫なしはのせていません。<br>
   楽天市場の商品は紹介リンクです。ここから買うと、運営者に紹介料が入ります。紹介料は並び順には関係しません。</p>
 </main>
 <footer class="pf"><p><a href="./">地図でさがす（授乳室・おむつ替え）</a> ・ <a href="areas.html">エリアからさがす</a></p></footer>
@@ -102,15 +105,15 @@
     });
     list.sort(function (a, b) { return a.per - b.per; });
     list = list.slice(0, 12);
-    $("res-title").textContent = tn + "・" + sn[st.size] + (st.brand === "all" ? "" : "・" + bn[st.brand]) + "（楽天市場の安い順）";
+    $("res-title").textContent = tn + "・" + sn[st.size] + (st.brand === "all" ? "" : "・" + bn[st.brand]) + "の安い順";
     $("res-count").textContent = list.length ? list.length + "件" : "";
     $("offers").innerHTML = list.length ? list.map(function (o, i) {
-      return '<li><a class="offer' + (i === 0 ? " top" : "") + '" href="' + esc(o.u) + '" target="_blank" rel="noopener sponsored">' +
+      return '<li><a class="offer' + (i === 0 ? " top" : "") + '" href="' + esc(o.u) + '" target="_blank" rel="noopener' + (o.store === "akachan" ? "" : " sponsored") + '">' +
         '<span class="b">' + esc(bn[o.brand]) + (i === 0 ? '<span class="best">いちばん安い</span>' : "") + "</span>" +
         '<span class="nm">' + esc(o.n) + "</span>" +
-        '<span class="sh">' + esc(o.shop) + (o.pt > 1 ? "・ポイント" + o.pt + "倍" : "") + "</span>" +
+        '<span class="sh"><span class="store ' + esc(o.store || "rakuten") + '">' + esc((D.stores || {})[o.store || "rakuten"] || "楽天市場") + "</span>" + (o.store === "akachan" ? "送料330円込み" : esc(o.shop)) + (o.pt > 1 ? "・ポイント" + o.pt + "倍" : "") + "</span>" +
         '<span class="per"><b>' + o.per.toFixed(1) + "円</b><small>1枚あたり</small><small>" + o.price.toLocaleString() + "円／" + o.sheets + "枚</small></span>" +
-        '<span class="go">楽天市場で見る →</span></a></li>';
+        '<span class="go">' + (o.store === "akachan" ? "アカチャンホンポで見る →" : "楽天市場で見る →") + "</span></a></li>";
     }).join("") : '<li class="empty">この組み合わせは、いま比べられる商品がありませんでした。サイズかブランドを変えてみてください。</li>';
     var q = (st.brand === "all" ? "紙おむつ" : bn[st.brand]) + " " + tn + " " + (st.size === "nb" ? "新生児" : st.size === "big" ? "ビッグ" : sn[st.size] + "サイズ");
     var e = encodeURIComponent(q);
@@ -118,13 +121,13 @@
       ["Amazon", "https://www.amazon.co.jp/s?k=" + e],
       ["Yahoo!ショッピング", "https://shopping.yahoo.co.jp/search?p=" + e],
       ["西松屋", "https://www.24028.jp/search/?kw=" + e + "&ie=u"],
-      ["アカチャンホンポ", "https://shop.akachan.jp/shop/goods/search.aspx?search=x&keyword=" + e]
+      ["LOHACO", "https://lohaco.yahoo.co.jp/search/?searchWord=" + e]
     ].map(function (x) { return '<a href="' + x[1] + '" target="_blank" rel="noopener">' + x[0] + "</a>"; }).join("");
   }
 
   fetch("data/prices.json", { cache: "no-cache" }).then(function (r) { return r.json(); }).then(function (js) {
     D = js;
-    $("upd").textContent = "楽天市場の値段: " + js.updated + " 時点";
+    $("upd").textContent = "値段: " + js.updated + " 時点（楽天市場・アカチャンホンポ）";
     if (st.type === "pants" && (st.size === "nb" || st.size === "s")) st.size = "m";
     draw();
   }).catch(function () { $("upd").textContent = "値段のデータを読みこめませんでした。時間をおいて開きなおしてください。"; });
