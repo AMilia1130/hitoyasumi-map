@@ -129,6 +129,9 @@ a { color: var(--accent); }
 .areas { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 12px; }
 .areas button { border: 0; background: var(--card); border-radius: 999px; padding: 7px 13px; font-weight: 700; font-size: 13.5px; color: var(--ink); box-shadow: 0 1px 3px rgba(42, 37, 34, .08); }
 .more-areas { align-self: center; font-weight: 700; font-size: 13.5px; color: var(--accent); text-decoration: none; padding: 7px 4px; }
+.price-link { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 14px; padding: 13px 16px; border-radius: 16px; background: var(--card); text-decoration: none; color: var(--ink); box-shadow: 0 1px 3px rgba(42, 37, 34, .08); }
+.price-link b { font-size: 15px; }
+.price-link span { font-size: 12.5px; color: var(--ink-2); }
 .note { color: var(--ink-2); font-size: 13.5px; padding: 6px 18px 10px; margin: 0; }
 .note.err { color: #B4391F; }
 

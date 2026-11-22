@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>おむつの値段くらべ｜1枚あたりいくら？ パンパース・メリーズ・ムーニー・グーン</title>
+<meta name="description" content="紙おむつを1枚あたりの値段で比べられます。パンパース・メリーズ・ムーニー・グーン・マミーポコを、サイズとテープ・パンツ別に、楽天市場の最新の値段で安い順に。Amazon・西松屋・アカチャンホンポ・Yahoo!ショッピングもすぐ見に行けます。">
+<link rel="canonical" href="https://amilia1130.github.io/hitoyasumi-map/omutsu.html">
+<meta property="og:title" content="おむつの値段くらべ｜1枚あたりいくら？">
+<meta property="og:description" content="紙おむつを1枚あたりの値段で、安い順に。サイズ・テープ／パンツ別。">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#FAF7F2">
+<link rel="icon" href="img/icon.jpg">
+<link rel="stylesheet" href="page.css?v=2">
+<style>
+  .pm { padding-top: 14px; }
+  .upd { font-size: 12.5px; color: var(--ink-3); margin: 0 0 14px; }
+  .grp { margin: 12px 0 0; }
+  .grp-l { font-size: 12px; font-weight: 700; color: var(--ink-3); margin: 0 0 6px; }
+  .seg { display: flex; flex-wrap: wrap; gap: 6px; }
+  .seg button { font: inherit; border: 1.5px solid var(--line); background: var(--card); border-radius: 999px; padding: 7px 14px; font-size: 14px; font-weight: 700; color: var(--ink-2); cursor: pointer; min-height: 38px; }
+  .seg button[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: #fff; }
+  .res-h { display: flex; justify-content: space-between; align-items: baseline; margin: 22px 0 10px; }
+  .res-h h2 { margin: 0; font-size: 16px; }
+  .res-h span { font-size: 12.5px; color: var(--ink-3); }
+  .offers { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .offer { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; background: var(--card); border-radius: 16px; padding: 12px 14px; text-decoration: none; color: var(--ink); box-shadow: 0 1px 3px rgba(42, 37, 34, .06); border: 1.5px solid transparent; }
+  .offer.top { border-color: var(--accent); }
+  .offer .b { font-size: 12px; font-weight: 700; color: var(--accent); }
+  .offer .nm { font-size: 13.5px; font-weight: 700; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .offer .sh { font-size: 12px; color: var(--ink-2); }
+  .offer .per { grid-row: 1 / span 3; grid-column: 2; text-align: right; align-self: center; }
+  .offer .per b { display: block; font-size: 22px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .offer .per small { display: block; font-size: 11.5px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+  .offer .go { grid-column: 1 / -1; font-size: 12.5px; font-weight: 700; color: var(--accent); margin-top: 4px; }
+  .best { display: inline-block; font-size: 11px; font-weight: 700; color: #fff; background: var(--accent); border-radius: 999px; padding: 2px 8px; margin-left: 6px; vertical-align: 1px; }
+  .others { margin: 24px 0 0; background: var(--card); border-radius: 16px; padding: 14px; }
+  .others h2 { margin: 0 0 4px; font-size: 15px; }
+  .others p { margin: 0 0 10px; font-size: 12.5px; color: var(--ink-2); }
+  .others .links { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .others a { display: block; text-align: center; padding: 11px 6px; border-radius: 12px; background: #F3EEE7; color: var(--ink); text-decoration: none; font-weight: 700; font-size: 13.5px; }
+  .note { font-size: 12px; color: var(--ink-3); margin: 18px 0 0; line-height: 1.7; }
+  .empty { background: var(--card); border-radius: 16px; padding: 16px; color: var(--ink-2); font-size: 14px; }
+</style>
+</head>
+<body>
+<header class="ph"><a href="./" class="brand"><img src="img/icon.jpg" alt="" width="34" height="34">ひとやすみマップ</a></header>
+<main class="pm">
+  <h1>おむつの値段くらべ</h1>
+  <p class="lead">1枚あたりいくらかで、安い順に並べます。送料込みの商品だけを比べています。</p>
+  <p class="upd" id="upd">読みこみ中…</p>
+
+  <div class="grp"><p class="grp-l">サイズ</p><div class="seg" id="sizes"></div></div>
+  <div class="grp"><p class="grp-l">タイプ</p><div class="seg" id="types"></div></div>
+  <div class="grp"><p class="grp-l">ブランド</p><div class="seg" id="brands"></div></div>
+
+  <div class="res-h"><h2 id="res-title">楽天市場の安い順</h2><span id="res-count"></span></div>
+  <ol class="offers" id="offers"></ol>
+
+  <section class="others">
+    <h2>ほかの店でも見る</h2>
+    <p>この4つの店の値段は自動では取れないため、店のページで確かめてください（同じ条件で検索したページが開きます）。</p>
+    <div class="links" id="links"></div>
+  </section>
+
+  <p class="note">楽天市場の値段は1日に数回、自動で取りなおしています（ページ上の時刻）。値段・在庫・ポイントは変わることがあるので、買う前に店のページでたしかめてください。1枚あたりの値段は「値段 ÷ 枚数」で、ポイントは入れていません。商品名から枚数が読み取れないもの・サイズを選ぶ形のものはのせていません。<br>
+  楽天市場の商品は紹介リンクです。ここから買うと、運営者に紹介料が入ります。紹介料は並び順には関係しません。</p>
+</main>
+<footer class="pf"><p><a href="./">地図でさがす（授乳室・おむつ替え）</a> ・ <a href="areas.html">エリアからさがす</a></p></footer>
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
+  var st = { size: "s", type: "tape", brand: "all" };
+  try { var saved = JSON.parse(localStorage.getItem("omutsu") || "null"); if (saved) st = saved; } catch (e) { /* 保存できなくても動く */ }
+  var D = null;
+
+  function seg(el, list, key, extra) {
+    el.innerHTML = "";
+    (extra ? [[extra[0], extra[1]]] : []).concat(list).forEach(function (x) {
+      var b = document.createElement("button");
+      b.type = "button"; b.textContent = x[1]; b.setAttribute("aria-pressed", String(st[key] === x[0]));
+      b.onclick = function () { st[key] = x[0]; if (key === "type" && x[0] === "pants" && (st.size === "nb" || st.size === "s")) st.size = "m"; save(); draw(); };
+      el.appendChild(b);
+    });
+  }
+  function save() { try { localStorage.setItem("omutsu", JSON.stringify(st)); } catch (e) { /* なくてよい */ } }
+
+  function draw() {
+    var sizes = D.sizes.filter(function (s) { return st.type === "tape" || (s[0] !== "nb" && s[0] !== "s"); });
+    seg($("sizes"), sizes, "size");
+    seg($("types"), D.types, "type");
+    seg($("brands"), D.brands, "brand", ["all", "すべて"]);
+    var bn = {}; D.brands.forEach(function (b) { bn[b[0]] = b[1]; });
+    var sn = {}; D.sizes.forEach(function (s) { sn[s[0]] = s[1]; });
+    var tn = st.type === "tape" ? "テープ" : "パンツ";
+    var list = [];
+    D.brands.forEach(function (b) {
+      if (st.brand !== "all" && st.brand !== b[0]) return;
+      (D.offers[b[0] + "-" + st.type + "-" + st.size] || []).forEach(function (o) { list.push(Object.assign({ brand: b[0] }, o)); });
+    });
+    list.sort(function (a, b) { return a.per - b.per; });
+    list = list.slice(0, 12);
+    $("res-title").textContent = tn + "・" + sn[st.size] + (st.brand === "all" ? "" : "・" + bn[st.brand]) + "（楽天市場の安い順）";
+    $("res-count").textContent = list.length ? list.length + "件" : "";
+    $("offers").innerHTML = list.length ? list.map(function (o, i) {
+      return '<li><a class="offer' + (i === 0 ? " top" : "") + '" href="' + esc(o.u) + '" target="_blank" rel="noopener sponsored">' +
+        '<span class="b">' + esc(bn[o.brand]) + (i === 0 ? '<span class="best">いちばん安い</span>' : "") + "</span>" +
+        '<span class="nm">' + esc(o.n) + "</span>" +
+        '<span class="sh">' + esc(o.shop) + (o.pt > 1 ? "・ポイント" + o.pt + "倍" : "") + "</span>" +
+        '<span class="per"><b>' + o.per.toFixed(1) + "円</b><small>1枚あたり</small><small>" + o.price.toLocaleString() + "円／" + o.sheets + "枚</small></span>" +
+        '<span class="go">楽天市場で見る →</span></a></li>';
+    }).join("") : '<li class="empty">この組み合わせは、いま比べられる商品がありませんでした。サイズかブランドを変えてみてください。</li>';
+    var q = (st.brand === "all" ? "紙おむつ" : bn[st.brand]) + " " + tn + " " + (st.size === "nb" ? "新生児" : st.size === "big" ? "ビッグ" : sn[st.size] + "サイズ");
+    var e = encodeURIComponent(q);
+    $("links").innerHTML = [
+      ["Amazon", "https://www.amazon.co.jp/s?k=" + e],
+      ["Yahoo!ショッピング", "https://shopping.yahoo.co.jp/search?p=" + e],
+      ["西松屋", "https://www.24028.jp/search/?kw=" + e + "&ie=u"],
+      ["アカチャンホンポ", "https://shop.akachan.jp/shop/goods/search.aspx?search=x&keyword=" + e]
+    ].map(function (x) { return '<a href="' + x[1] + '" target="_blank" rel="noopener">' + x[0] + "</a>"; }).join("");
+  }
+
+  fetch("data/prices.json", { cache: "no-cache" }).then(function (r) { return r.json(); }).then(function (js) {
+    D = js;
+    $("upd").textContent = "楽天市場の値段: " + js.updated + " 時点";
+    if (st.type === "pants" && (st.size === "nb" || st.size === "s")) st.size = "m";
+    draw();
+  }).catch(function () { $("upd").textContent = "値段のデータを読みこめませんでした。時間をおいて開きなおしてください。"; });
+})();
+</script>
+</body>
+</html>
