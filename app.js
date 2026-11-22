@@ -79,7 +79,9 @@
     st.snap = Math.max(0, Math.min(2, i));
     if (wide.matches) { sheet.style.height = ""; layout(); return; }
     sheet.style.transition = instant ? "none" : "";
-    sheet.style.height = Math.round(window.innerHeight * SNAP[st.snap]) + "px";
+    // いちばん広げたときも、上の検索とボタンは隠さない
+    var topLimit = window.innerHeight - document.querySelector(".topbar").getBoundingClientRect().bottom - 6;
+    sheet.style.height = Math.round(Math.min(window.innerHeight * SNAP[st.snap], topLimit)) + "px";
     var tg = $("toggle");
     if (tg) tg.textContent = st.snap >= 2 ? "地図を見る" : "一覧を広げる";
     setTimeout(layout, 260);
@@ -101,7 +103,7 @@
       }
       if (!dragging) return;
       e.preventDefault();
-      var h = Math.max(window.innerHeight * 0.18, Math.min(window.innerHeight * 0.94, h0 - dy));
+      var h = Math.max(window.innerHeight * 0.18, Math.min(window.innerHeight - document.querySelector(".topbar").getBoundingClientRect().bottom - 6, h0 - dy));
       sheet.style.transition = "none";
       sheet.style.height = h + "px";
     }
