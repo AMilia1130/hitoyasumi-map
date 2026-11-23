@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>おむつの値段くらべ｜1枚あたりいくら？ パンパース・メリーズ・ムーニー・グーン</title>
-<meta name="description" content="紙おむつを1枚あたりの値段で比べられます。パンパース・メリーズ・ムーニー・グーン・マミーポコを、サイズとテープ・パンツ別に、楽天市場・西松屋・アカチャンホンポの値段（送料込み）で安い順に。">
+<title>おむつ・おしりふき・粉ミルクの値段くらべ｜1枚あたり・100gあたりで比べる</title>
+<meta name="description" content="紙おむつ・おしりふき・粉ミルクを、1枚あたり・100gあたりの値段で比べられます。パンパース・メリーズ・ムーニー・ほほえみ・はいはい・すこやか など、楽天市場・西松屋・アカチャンホンポの値段で安い順に。">
 <link rel="canonical" href="https://amilia1130.github.io/hitoyasumi-map/omutsu.html">
-<meta property="og:title" content="おむつの値段くらべ｜1枚あたりいくら？">
+<meta property="og:title" content="おむつ・おしりふき・粉ミルクの値段くらべ">
 <meta property="og:description" content="紙おむつを1枚あたりの値段で、安い順に。サイズ・テープ／パンツ別。">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#FAF7F2">
@@ -44,18 +44,22 @@
   .store.akachan { background: #E3EEF9; color: #2C5F99; }
   .store.nishimatsuya { background: #E4F3EA; color: #23794A; }
   .note { font-size: 12px; color: var(--ink-3); margin: 18px 0 0; line-height: 1.7; }
+  .cat-tabs { margin: 0 0 6px; }
+  .cat-tabs button { font-size: 15px; padding: 9px 16px; }
   .empty { background: var(--card); border-radius: 16px; padding: 16px; color: var(--ink-2); font-size: 14px; }
 </style>
 </head>
 <body>
 <header class="ph"><a href="./" class="brand"><img src="img/icon.jpg" alt="" width="34" height="34">ひとやすみマップ</a></header>
 <main class="pm">
-  <h1>おむつの値段くらべ</h1>
-  <p class="lead">1枚あたりいくらかで、安い順に並べます。楽天市場・西松屋・アカチャンホンポ（ネット通販）の商品の値段で比べています。送料は別に書いています。</p>
+  <h1>赤ちゃんの必需品 値段くらべ</h1>
+  <p class="lead">おむつ・おしりふき・粉ミルクを、1枚あたり・100gあたりの値段で安い順に並べます。楽天市場・西松屋・アカチャンホンポ（ネット通販）の商品の値段で比べ、送料は別に書いています。</p>
   <p class="upd" id="upd">読みこみ中…</p>
 
-  <div class="grp"><p class="grp-l">サイズ</p><div class="seg" id="sizes"></div></div>
-  <div class="grp"><p class="grp-l">タイプ</p><div class="seg" id="types"></div></div>
+  <div class="cat-tabs seg" id="cats"></div>
+  <div class="grp" id="g-sizes"><p class="grp-l">サイズ</p><div class="seg" id="sizes"></div></div>
+  <div class="grp" id="g-types"><p class="grp-l">タイプ</p><div class="seg" id="types"></div></div>
+  <div class="grp" id="g-forms"><p class="grp-l">かたち</p><div class="seg" id="forms"></div></div>
   <div class="grp"><p class="grp-l">ブランド</p><div class="seg" id="brands"></div></div>
 
   <div class="res-h"><h2 id="res-title">安い順</h2><span id="res-count"></span></div>
@@ -63,11 +67,11 @@
 
   <section class="others">
     <h2>ほかの店でも見る</h2>
-    <p>この店の値段は自動では取っていないので、店のページで確かめてください（同じ条件で検索したページが開きます）。</p>
+    <p>この店の値段は自動では取っていないので、店のページで確かめてください（同じ条件で検索したページが開きます）。Amazon は値段の自動取得を規約で禁じているため、のせていません。</p>
     <div class="links" id="links"></div>
   </section>
 
-  <p class="note">値段は1日に数回、自動で取りなおしています（ページ上の時刻）。値段・在庫・ポイントは変わることがあるので、買う前に店のページでたしかめてください。1枚あたりの値段は「商品の値段 ÷ 枚数」で、送料とポイントは入れていません。送料は商品ごとに別に書いています（アカチャンホンポ・西松屋の紙おむつは1ケースごとの送料、楽天市場は送料無料か店ごと）。西松屋でネット在庫がないものも、店頭の値段の目安としてのせています。商品名から枚数が読み取れないもの・サイズを選ぶ形のもの・在庫なしはのせていません。<br>
+  <p class="note">値段は1日に数回、自動で取りなおしています（ページ上の時刻）。値段・在庫・ポイントは変わることがあるので、買う前に店のページでたしかめてください。1つあたりの値段は「商品の値段 ÷ 枚数（粉ミルクは グラム）」で、送料とポイントは入れていません。送料は商品ごとに別に書いています。西松屋でネット在庫がないものも、店頭の値段の目安としてのせています。商品名から量が読み取れないもの・サイズや種類を選ぶ形のもの・在庫なしはのせていません。<br>
   楽天市場の商品は紹介リンクです。ここから買うと、運営者に紹介料が入ります。紹介料は並び順には関係しません。</p>
 </main>
 <footer class="pf"><p><a href="./">地図でさがす（授乳室・おむつ替え）</a> ・ <a href="areas.html">エリアからさがす</a></p></footer>
@@ -76,8 +80,11 @@
   "use strict";
   var $ = function (id) { return document.getElementById(id); };
   var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
-  var st = { size: "s", type: "tape", brand: "all" };
-  try { var saved = JSON.parse(localStorage.getItem("omutsu") || "null"); if (saved) st = saved; } catch (e) { /* 保存できなくても動く */ }
+  var CATS = [["omutsu", "おむつ"], ["wipes", "おしりふき"], ["milk", "粉ミルク"]];
+  var st = { cat: "omutsu", size: "s", type: "tape", brand: "all", form: "can" };
+  try { var saved = JSON.parse(localStorage.getItem("omutsu") || "null"); if (saved) st = Object.assign(st, saved); } catch (e) { /* 保存できなくても動く */ }
+  var q0 = new URLSearchParams(location.search).get("c");
+  if (q0 && /^(omutsu|wipes|milk)$/.test(q0)) st.cat = q0;
   var D = null;
 
   function seg(el, list, key, extra) {
@@ -85,43 +92,78 @@
     (extra ? [[extra[0], extra[1]]] : []).concat(list).forEach(function (x) {
       var b = document.createElement("button");
       b.type = "button"; b.textContent = x[1]; b.setAttribute("aria-pressed", String(st[key] === x[0]));
-      b.onclick = function () { st[key] = x[0]; if (key === "type" && x[0] === "pants" && (st.size === "nb" || st.size === "s")) st.size = "m"; save(); draw(); };
+      b.onclick = function () {
+        if (key === "cat" && st.cat !== x[0]) st.brand = "all";
+        st[key] = x[0];
+        if (key === "type" && x[0] === "pants" && (st.size === "nb" || st.size === "s")) st.size = "m";
+        save(); draw();
+      };
       el.appendChild(b);
     });
   }
   function shipText(o) {
+    if (o.shipNote) return o.shipNote;
     if (o.ship === 0) return "送料無料";
     if (o.ship == null) return "送料は店による";
     return "送料" + o.ship + "円（1ケース）";
   }
   function save() { try { localStorage.setItem("omutsu", JSON.stringify(st)); } catch (e) { /* なくてよい */ } }
 
+  function card(o, i, bn, unitLabel, qtyText) {
+    return '<li><a class="offer' + (i === 0 ? " top" : "") + '" href="' + esc(o.u) + '" target="_blank" rel="noopener' + (o.store === "rakuten" || !o.store ? " sponsored" : "") + '">' +
+      '<span class="b">' + esc(bn[o.brand]) + (i === 0 ? '<span class="best">いちばん安い</span>' : "") + "</span>" +
+      '<span class="nm">' + esc(o.n) + "</span>" +
+      '<span class="sh"><span class="store ' + esc(o.store || "rakuten") + '">' + esc((D.stores || {})[o.store || "rakuten"] || "楽天市場") + "</span>" +
+      (o.store === "rakuten" || !o.store ? esc(o.shop) + "・" : "") + shipText(o) + (o.store === "nishimatsuya" && o.stock === false ? "・ネットは在庫なし" : "") + (o.pt > 1 ? "・ポイント" + o.pt + "倍" : "") + "</span>" +
+      '<span class="per"><b>' + (unitLabel === "100gあたり" ? Math.round(o.per).toLocaleString() : o.per.toFixed(1)) + "円</b><small>" + unitLabel + "</small><small>" + o.price.toLocaleString() + "円／" + qtyText(o) + "</small></span>" +
+      '<span class="go">' + (o.store === "akachan" ? "アカチャンホンポで見る →" : o.store === "nishimatsuya" ? "西松屋で見る →" : "楽天市場で見る →") + "</span></a></li>";
+  }
+
   function draw() {
-    var sizes = D.sizes.filter(function (s) { return st.type === "tape" || (s[0] !== "nb" && s[0] !== "s"); });
-    seg($("sizes"), sizes, "size");
-    seg($("types"), D.types, "type");
-    seg($("brands"), D.brands, "brand", ["all", "すべて"]);
-    var bn = {}; D.brands.forEach(function (b) { bn[b[0]] = b[1]; });
-    var sn = {}; D.sizes.forEach(function (s) { sn[s[0]] = s[1]; });
-    var tn = st.type === "tape" ? "テープ" : "パンツ";
-    var list = [];
-    D.brands.forEach(function (b) {
-      if (st.brand !== "all" && st.brand !== b[0]) return;
-      (D.offers[b[0] + "-" + st.type + "-" + st.size] || []).forEach(function (o) { list.push(Object.assign({ brand: b[0] }, o)); });
-    });
+    seg($("cats"), CATS, "cat");
+    var isO = st.cat === "omutsu", C = isO ? D : D.more[st.cat];
+    $("g-sizes").hidden = !isO; $("g-types").hidden = !isO; $("g-forms").hidden = st.cat !== "milk";
+    var bn = {}; C.brands.forEach(function (b) { bn[b[0]] = b[1]; });
+    var list = [], title, q, unitLabel, qtyText;
+    if (isO) {
+      var sizes = D.sizes.filter(function (s) { return st.type === "tape" || (s[0] !== "nb" && s[0] !== "s"); });
+      seg($("sizes"), sizes, "size"); seg($("types"), D.types, "type");
+      var sn = {}; D.sizes.forEach(function (s) { sn[s[0]] = s[1]; });
+      var tn = st.type === "tape" ? "テープ" : "パンツ";
+      C.brands.forEach(function (b) {
+        if (st.brand !== "all" && st.brand !== b[0]) return;
+        (D.offers[b[0] + "-" + st.type + "-" + st.size] || []).forEach(function (o) { list.push(Object.assign({ brand: b[0] }, o)); });
+      });
+      title = "おむつ " + tn + "・" + sn[st.size];
+      q = (st.brand === "all" ? "紙おむつ" : bn[st.brand]) + " " + tn + " " + (st.size === "nb" ? "新生児" : st.size === "big" ? "ビッグ" : sn[st.size] + "サイズ");
+      unitLabel = "1枚あたり"; qtyText = function (o) { return o.sheets + "枚"; };
+    } else if (st.cat === "wipes") {
+      C.brands.forEach(function (b) {
+        if (st.brand !== "all" && st.brand !== b[0]) return;
+        (C.offers[b[0]] || []).forEach(function (o) { list.push(Object.assign({ brand: b[0] }, o)); });
+      });
+      title = "おしりふき";
+      q = (st.brand === "all" ? "" : bn[st.brand].replace(/（.*）/, "") + " ") + "おしりふき";
+      unitLabel = "1枚あたり"; qtyText = function (o) { return o.units + "枚"; };
+    } else {
+      if (!/^(can|cube)$/.test(st.form)) st.form = "can";
+      seg($("forms"), C.forms, "form");
+      C.brands.forEach(function (b) {
+        if (st.brand !== "all" && st.brand !== b[0]) return;
+        (C.offers[b[0] + "-" + st.form] || []).forEach(function (o) { list.push(Object.assign({ brand: b[0] }, o)); });
+      });
+      var fn = {}; C.forms.forEach(function (f) { fn[f[0]] = f[1]; });
+      title = "粉ミルク " + fn[st.form];
+      q = (st.brand === "all" ? "粉ミルク" : bn[st.brand]) + (st.form === "cube" ? " キューブ" : " 粉ミルク");
+      unitLabel = "100gあたり"; qtyText = function (o) { return o.units.toLocaleString() + "g"; };
+    }
+    seg($("brands"), C.brands, "brand", ["all", "すべて"]);
     list.sort(function (a, b) { return a.per - b.per; });
     list = list.slice(0, 12);
-    $("res-title").textContent = tn + "・" + sn[st.size] + (st.brand === "all" ? "" : "・" + bn[st.brand]) + "の安い順";
+    $("res-title").textContent = title + (st.brand === "all" ? "" : "・" + bn[st.brand]) + "の安い順";
     $("res-count").textContent = list.length ? list.length + "件" : "";
-    $("offers").innerHTML = list.length ? list.map(function (o, i) {
-      return '<li><a class="offer' + (i === 0 ? " top" : "") + '" href="' + esc(o.u) + '" target="_blank" rel="noopener' + (o.store === "rakuten" || !o.store ? " sponsored" : "") + '">' +
-        '<span class="b">' + esc(bn[o.brand]) + (i === 0 ? '<span class="best">いちばん安い</span>' : "") + "</span>" +
-        '<span class="nm">' + esc(o.n) + "</span>" +
-        '<span class="sh"><span class="store ' + esc(o.store || "rakuten") + '">' + esc((D.stores || {})[o.store || "rakuten"] || "楽天市場") + "</span>" + (o.store === "rakuten" || !o.store ? esc(o.shop) + "・" : "") + shipText(o) + (o.store === "nishimatsuya" && !o.stock ? "・ネットは在庫なし" : "") + (o.pt > 1 ? "・ポイント" + o.pt + "倍" : "") + "</span>" +
-        '<span class="per"><b>' + o.per.toFixed(1) + "円</b><small>1枚あたり</small><small>" + o.price.toLocaleString() + "円／" + o.sheets + "枚</small></span>" +
-        '<span class="go">' + (o.store === "akachan" ? "アカチャンホンポで見る →" : o.store === "nishimatsuya" ? "西松屋で見る →" : "楽天市場で見る →") + "</span></a></li>";
-    }).join("") : '<li class="empty">この組み合わせは、いま比べられる商品がありませんでした。サイズかブランドを変えてみてください。</li>';
-    var q = (st.brand === "all" ? "紙おむつ" : bn[st.brand]) + " " + tn + " " + (st.size === "nb" ? "新生児" : st.size === "big" ? "ビッグ" : sn[st.size] + "サイズ");
+    $("offers").innerHTML = list.length ? list.map(function (o, i) { return card(o, i, bn, unitLabel, qtyText); }).join("")
+      : '<li class="empty">この組み合わせは、いま比べられる商品がありませんでした。ほかの条件を選んでみてください。</li>';
     var e = encodeURIComponent(q);
     $("links").innerHTML = [
       ["Amazon", "https://www.amazon.co.jp/s?k=" + e],
@@ -132,6 +174,7 @@
 
   fetch("data/prices.json", { cache: "no-cache" }).then(function (r) { return r.json(); }).then(function (js) {
     D = js;
+    if (!D.more) { D.more = {}; CATS = CATS.slice(0, 1); st.cat = "omutsu"; }
     $("upd").textContent = "値段: " + js.updated + " 時点（楽天市場・西松屋・アカチャンホンポ）";
     if (st.type === "pants" && (st.size === "nb" || st.size === "s")) st.size = "m";
     draw();
