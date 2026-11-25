@@ -157,9 +157,7 @@
     $("sources").innerHTML = js.sources.map(function (s) { return "<li>" + esc(s) + "</li>"; }).join("");
     $("data-date").textContent = " データの作成日: " + js.date;
     if (!st.center) {   // 場所を選ぶ前は、授乳できる場所を小さな点で出しておく（どのあたりにあるかが分かる）
-      js.places.forEach(function (p) {
-        if (p.f.indexOf("junyu") >= 0) L.circleMarker([p.lat, p.lng], { radius: 2.6, stroke: false, fillColor: "#E8644A", fillOpacity: .5, interactive: false }).addTo(dots);
-      });
+      drawDots();
       if (st.view === "hello") renderHello();
     }
   }).catch(function () { st.failed = true; if (st.view === "hello") renderHello(); });
@@ -208,6 +206,20 @@
     });
     return h;
   }
+  function drawDots() {
+    dots.clearLayers();
+    st.places.forEach(function (p) {
+      if (p.f.indexOf("junyu") >= 0) L.circleMarker([p.lat, p.lng], { radius: 2.6, stroke: false, fillColor: "#E8644A", fillOpacity: .5, interactive: false }).addTo(dots);
+    });
+  }
+  function goHome() {
+    st.center = null; st.label = ""; st.sel = null; st.results = [];
+    var q = $("place"); if (q) q.value = "";
+    meLayer.clearLayers(); pins.clearLayers();
+    if (st.ready) drawDots();
+    map.setView([35.676, 139.70], 11.5, { animate: false });
+    renderHello();
+  }
   function renderHello(msg) {
     st.view = "hello"; sheet.className = "sheet";
     if (!wide.matches) setSnap(1, true);
@@ -232,7 +244,8 @@
     pins.clearLayers(); markers = {};
     var names = NEEDS.filter(function (n) { return n.on; }).map(function (n) { return n.label; });
     var where = st.label ? esc(st.label) + "のまわり" : "このあたり";
-    var html = '<div class="head"><h2>' + where + "<small>" + (st.results.length ? fmt(st.radius) + "以内・" + st.total + "件" + (st.total > 60 ? "（近い順に60件）" : "") : names.join("・")) + "</small></h2>" +
+    // 11/26 ユーザー「検索後にトップに戻り方がわからん」→ 一覧の上に「はじめにもどる」を常に出す
+    var html = '<button class="home-back" id="home-back" type="button">← はじめにもどる</button><div class="head"><h2>' + where + "<small>" + (st.results.length ? fmt(st.radius) + "以内・" + st.total + "件" + (st.total > 60 ? "（近い順に60件）" : "") : names.join("・")) + "</small></h2>" +
       (st.results.length ? '<button class="toggle" id="toggle" type="button">' + (st.snap >= 2 ? "地図を見る" : "一覧を広げる") + "</button>" : "") + "</div>";
     if (!names.length) html += '<p class="note">上の「授乳」「おむつ替え」などから、さがしたいものを選んでください。</p>';
     else if (!st.results.length) html += '<p class="note">' + fmt(RADII[RADII.length - 1]) + "以内には見つかりませんでした。さがしたいものを足すか、場所を変えてみてください。</p>";
@@ -254,6 +267,7 @@
     });
     var tg = $("toggle");
     if (tg) tg.onclick = function () { setSnap(st.snap >= 2 ? 0 : 2); };
+    $("home-back").onclick = goHome;
     var cards = $("cards");
     Array.prototype.forEach.call(cards.querySelectorAll(".card"), function (b) {
       b.onclick = function () { openDetail(st.places[b.dataset.i]); };
