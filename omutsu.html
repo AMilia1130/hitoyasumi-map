@@ -53,7 +53,7 @@
 <header class="ph"><a href="./" class="brand"><img src="img/icon.jpg" alt="" width="34" height="34">ひとやすみマップ</a></header>
 <main class="pm">
   <h1>赤ちゃんの必需品 値段くらべ</h1>
-  <p class="lead">おむつ・おしりふき・粉ミルクを、1枚あたり・100gあたりの値段で安い順に並べます。楽天市場・西松屋・アカチャンホンポ（ネット通販）の商品の値段で比べ、送料は別に書いています。</p>
+  <p class="lead">おむつ・おしりふき・粉ミルクを、1枚あたり・100gあたりの値段で安い順に並べます。楽天市場・西松屋・アカチャンホンポ（ネット通販）の値段で比べます。おむつは送料込みで並べています。</p>
   <p class="upd" id="upd">読みこみ中…</p>
 
   <div class="cat-tabs seg" id="cats"></div>
@@ -71,7 +71,7 @@
     <div class="links" id="links"></div>
   </section>
 
-  <p class="note">値段は1日に数回、自動で取りなおしています（ページ上の時刻）。値段・在庫・ポイントは変わることがあるので、買う前に店のページでたしかめてください。1つあたりの値段は「商品の値段 ÷ 枚数（粉ミルクは グラム）」で、送料とポイントは入れていません。送料は商品ごとに別に書いています。西松屋でネット在庫がないものも、店頭の値段の目安としてのせています。商品名から量が読み取れないもの・サイズや種類を選ぶ形のもの・在庫なしはのせていません。<br>
+  <p class="note">値段は1日に数回、自動で取りなおしています（ページ上の時刻）。値段・在庫・ポイントは変わることがあるので、買う前に店のページでたしかめてください。おむつは「（商品の値段＋送料）÷ 枚数」の送料込みで安い順に並べ、送料が分からない品（楽天の送料別の店）はその後ろに本体だけの値段でのせています。おしりふき・粉ミルクは「商品の値段 ÷ 枚数（グラム）」で、送料は商品ごとに別に書いています。ポイントは入れていません。西松屋でネット在庫がないものも、店頭の値段の目安としてのせています。商品名から量が読み取れないもの・サイズや種類を選ぶ形のもの・在庫なしはのせていません。<br>
   楽天市場の商品は紹介リンクです。ここから買うと、運営者に紹介料が入ります。紹介料は並び順には関係しません。</p>
 </main>
 <footer class="pf"><p><a href="./">地図でさがす（授乳室・おむつ替え）</a> ・ <a href="areas.html">エリアからさがす</a></p></footer>
@@ -115,7 +115,9 @@
       '<span class="nm">' + esc(o.n) + "</span>" +
       '<span class="sh"><span class="store ' + esc(o.store || "rakuten") + '">' + esc((D.stores || {})[o.store || "rakuten"] || "楽天市場") + "</span>" +
       (o.store === "rakuten" || !o.store ? esc(o.shop) + "・" : "") + shipText(o) + (o.store === "nishimatsuya" && o.stock === false ? "・ネットは在庫なし" : "") + (o.pt > 1 ? "・ポイント" + o.pt + "倍" : "") + "</span>" +
-      '<span class="per"><b>' + (unitLabel === "100gあたり" ? Math.round(o.per).toLocaleString() : o.per.toFixed(1)) + "円</b><small>" + unitLabel + "</small><small>" + o.price.toLocaleString() + "円／" + qtyText(o) + "</small></span>" +
+      (o.all != null
+        ? '<span class="per"><b>' + o.all.toFixed(1) + "円</b><small>送料込み・1枚あたり</small><small>" + o.price.toLocaleString() + (o.ship ? "円＋送料" + o.ship + "円／" : "円（送料無料）／") + qtyText(o) + "（本体だけ " + o.per.toFixed(1) + "円）</small></span>"
+        : '<span class="per"><b>' + (unitLabel === "100gあたり" ? Math.round(o.per).toLocaleString() : o.per.toFixed(1)) + "円</b><small>" + unitLabel + (st.cat === "omutsu" ? "（送料は別）" : "") + "</small><small>" + o.price.toLocaleString() + "円／" + qtyText(o) + "</small></span>") +
       '<span class="go">' + (o.store === "akachan" ? "アカチャンホンポで見る →" : o.store === "nishimatsuya" ? "西松屋で見る →" : "楽天市場で見る →") + "</span></a></li>";
   }
 
@@ -158,7 +160,13 @@
       unitLabel = "100gあたり"; qtyText = function (o) { return o.units.toLocaleString() + "g"; };
     }
     seg($("brands"), C.brands, "brand", ["all", "すべて"]);
-    list.sort(function (a, b) { return a.per - b.per; });
+    // おむつは送料込みの1枚あたりで並べる。送料が分からない品は後ろ（11/25 ユーザーの CSV: 送料抜きの順位は入れ替わる）
+    if (isO) {
+      list.forEach(function (o) { o.all = o.ship != null ? Math.round((o.price + o.ship) / o.sheets * 10) / 10 : null; });
+      list.sort(function (a, b) { return (a.all == null) - (b.all == null) || (a.all == null ? a.per - b.per : a.all - b.all); });
+    } else {
+      list.sort(function (a, b) { return a.per - b.per; });
+    }
     list = list.slice(0, 12);
     $("res-title").textContent = title + (st.brand === "all" ? "" : "・" + bn[st.brand]) + "の安い順";
     $("res-count").textContent = list.length ? list.length + "件" : "";
