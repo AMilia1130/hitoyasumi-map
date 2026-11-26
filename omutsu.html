@@ -33,6 +33,8 @@
   .offer .per b { display: block; font-size: 22px; line-height: 1.1; font-variant-numeric: tabular-nums; }
   .offer .per small { display: block; font-size: 11.5px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
   .offer .go { grid-column: 1 / -1; font-size: 12.5px; font-weight: 700; color: var(--accent); margin-top: 4px; }
+  .shelf { margin: 14px 0 0; font-size: 13.5px; font-weight: 700; }
+  .shelf a { color: var(--accent); text-decoration: none; }
   .offer .calc { grid-column: 1 / -1; font-size: 12px; color: var(--ink-2); font-variant-numeric: tabular-nums; margin-top: 2px; }
   .offer .per { max-width: 9.5em; }
   .offer .sh { overflow-wrap: anywhere; }
@@ -68,6 +70,8 @@
   <div class="res-h"><h2 id="res-title">安い順</h2><span id="res-count"></span></div>
   <ol class="offers" id="offers"></ol>
 
+  <p class="shelf" id="shelf"></p>
+
   <section class="others">
     <h2>ほかの店でも見る</h2>
     <p>この店の値段は自動では取っていないので、店のページで確かめてください（同じ条件で検索したページが開きます）。Amazon は値段の自動取得を規約で禁じているため、のせていません。</p>
@@ -75,7 +79,7 @@
   </section>
 
   <p class="note">値段は1日に数回、自動で取りなおしています（ページ上の時刻）。値段・在庫・ポイントは変わることがあるので、買う前に店のページでたしかめてください。おむつは「（商品の値段＋送料）÷ 枚数」の送料込みで安い順に並べ、送料が分からない品（楽天の送料別の店）はその後ろに本体だけの値段でのせています。おしりふき・粉ミルクは「商品の値段 ÷ 枚数（グラム）」で、送料は商品ごとに別に書いています。ポイントは入れていません。西松屋でネット在庫がないものも、店頭の値段の目安としてのせています。商品名から量が読み取れないもの・サイズや種類を選ぶ形のもの・在庫なしはのせていません。<br>
-  楽天市場の商品は紹介リンクです。ここから買うと、運営者に紹介料が入ります。紹介料は並び順には関係しません。</p>
+  楽天市場の商品と楽天ROOMの棚は紹介リンクです。ここから買うと、運営者に紹介料が入ります。紹介料は並び順には関係しません。</p>
 </main>
 <footer class="pf"><p><a href="./">地図でさがす（授乳室・おむつ替え）</a> ・ <a href="areas.html">エリアからさがす</a></p></footer>
 <script>
@@ -179,6 +183,9 @@
     $("res-count").textContent = list.length ? list.length + "件" : "";
     $("offers").innerHTML = list.length ? list.map(function (o, i) { return card(o, i, bn, unitLabel, qtyText); }).join("")
       : '<li class="empty">この組み合わせは、いま比べられる商品がありませんでした。ほかの条件を選んでみてください。</li>';
+    // 11/26 プレイブック「ROOM へは価格ページ側から誘導する」: その分類の棚（楽天ROOM のコレクション）へ1行だけ
+    var SHELF = { omutsu: ["1800012917409141", "サイズ別・今日の最安（送料込み）の棚"], milk: ["1800012917414701", "粉ミルク 100gあたり最安メモの棚"] }[st.cat];
+    $("shelf").innerHTML = SHELF ? '<a href="https://room.rakuten.co.jp/yorupapa_night/collection/' + SHELF[0] + '" target="_blank" rel="noopener sponsored">楽天ROOM の' + SHELF[1] + ' →</a>' : "";
     var e = encodeURIComponent(q);
     $("links").innerHTML = [
       ["Amazon", "https://www.amazon.co.jp/s?k=" + e],

@@ -196,3 +196,5 @@ a { color: var(--accent); }
   .card:hover { border-color: color-mix(in srgb, var(--c) 45%, #fff); }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+.shelf-link { display: block; margin-top: 10px; font-size: 13px; font-weight: 700; color: var(--accent); text-decoration: none; }
