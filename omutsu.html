@@ -74,12 +74,13 @@
 
   <section class="others">
     <h2>ほかの店でも見る</h2>
-    <p>この店の値段は自動では取っていないので、店のページで確かめてください（同じ条件で検索したページが開きます）。Amazon は値段の自動取得を規約で禁じているため、のせていません。</p>
+    <p>この店の値段はのせていないので、店のページで確かめてください（同じ条件で検索したページが開きます）。</p>
     <div class="links" id="links"></div>
   </section>
 
   <p class="note">値段は1日に数回、自動で取りなおしています（ページ上の時刻）。値段・在庫・ポイントは変わることがあるので、買う前に店のページでたしかめてください。おむつは「（商品の値段＋送料）÷ 枚数」の送料込みで安い順に並べ、送料が分からない品（楽天の送料別の店）はその後ろに本体だけの値段でのせています。おしりふき・粉ミルクは「商品の値段 ÷ 枚数（グラム）」で、送料は商品ごとに別に書いています。ポイントは入れていません。西松屋でネット在庫がないものも、店頭の値段の目安としてのせています。商品名から量が読み取れないもの・サイズや種類を選ぶ形のもの・在庫なしはのせていません。<br>
-  楽天市場の商品と楽天ROOMの棚は紹介リンクです。ここから買うと、運営者に紹介料が入ります。紹介料は並び順には関係しません。</p>
+  楽天市場の商品と楽天ROOMの棚は紹介リンクです。ここから買うと、運営者に紹介料が入ります。紹介料は並び順には関係しません。<br>
+  Amazonのアソシエイトとして、ひとやすみマップは適格販売により収入を得ています。</p>
 </main>
 <footer class="pf"><p><a href="./">地図でさがす（授乳室・おむつ替え）</a> ・ <a href="areas.html">エリアからさがす</a></p></footer>
 <script>
@@ -87,6 +88,8 @@
   "use strict";
   var $ = function (id) { return document.getElementById(id); };
   var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
+  // Amazon アソシエイトのトラッキングID（11/27 ユーザーが登録）。値段は出さない（PA-API を使えるまで。プレイブック 11/27 の公開ルール）
+  var AMZ_TAG = "yorupapanight-22";
   var CATS = [["omutsu", "おむつ"], ["wipes", "おしりふき"], ["milk", "粉ミルク"]];
   var st = { cat: "omutsu", size: "s", type: "tape", brand: "all", form: "can" };
   try { var saved = JSON.parse(localStorage.getItem("omutsu") || "null"); if (saved) st = Object.assign(st, saved); } catch (e) { /* 保存できなくても動く */ }
@@ -188,7 +191,7 @@
     $("shelf").innerHTML = SHELF ? '<a href="https://room.rakuten.co.jp/yorupapa_night/collection/' + SHELF[0] + '" target="_blank" rel="noopener sponsored">楽天ROOM の' + SHELF[1] + ' →</a>' : "";
     var e = encodeURIComponent(q);
     $("links").innerHTML = [
-      ["Amazon", "https://www.amazon.co.jp/s?k=" + e],
+      ["Amazon", "https://www.amazon.co.jp/s?k=" + e + (AMZ_TAG ? "&tag=" + AMZ_TAG : "")],
       ["Yahoo!ショッピング", "https://shopping.yahoo.co.jp/search?p=" + e],
       ["LOHACO", "https://lohaco.yahoo.co.jp/search/?searchWord=" + e]
     ].map(function (x) { return '<a href="' + x[1] + '" target="_blank" rel="noopener">' + x[0] + "</a>"; }).join("");
