@@ -141,7 +141,10 @@
     if (!list.length) return "";
     return '<section class="picks"><h3>おでかけに、あると助かるもの</h3><div class="pick-row">' + list.slice(0, 2).map(function (x) {
       return '<a class="pick" href="' + esc(x.u) + '" target="_blank" rel="noopener sponsored"><img src="' + esc(x.img) + '" alt="" loading="lazy"><span>' + esc(x.n) + "<small>楽天市場で見る</small></span></a>";
-    }).join("") + '</div><p class="aff">楽天市場の紹介リンクです。ここから買うと、運営者に紹介料が入ります。</p></section>';
+    }).join("") + "</div>" +
+      // 11/27 Amazon アソシエイト（yorupapanight-22）: 同じ品を Amazon でさがす検索リンク。値段は出さない
+      '<a class="amz-link" href="https://www.amazon.co.jp/s?k=' + encodeURIComponent(list[0].n.replace(/（.*?）/g, "")) + '&tag=yorupapanight-22" target="_blank" rel="noopener sponsored">Amazon でもさがす（価格はリンク先で）→</a>' +
+      '<p class="aff">楽天市場とAmazonの紹介リンクです。ここから買うと、運営者に紹介料が入ります。Amazonのアソシエイトとして、ひとやすみマップは適格販売により収入を得ています。</p></section>';
   }
 
   /* ---------- データ ---------- */

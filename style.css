@@ -198,3 +198,4 @@ a { color: var(--accent); }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 
 .shelf-link { display: block; margin-top: 10px; font-size: 13px; font-weight: 700; color: var(--accent); text-decoration: none; }
+.amz-link { display: inline-block; margin: 8px 0 2px; font-size: 13px; font-weight: 700; color: var(--accent); text-decoration: none; }
