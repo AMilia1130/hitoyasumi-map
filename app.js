@@ -233,6 +233,7 @@
       '<div class="areas">' + AREAS.map(function (a, i) { return '<button type="button" data-a="' + i + '">' + a[0] + "</button>"; }).join("") +
       '<a class="more-areas" href="areas.html">ほかの駅・区市町村 →</a></div>' +
       '<a class="price-link" href="omutsu.html"><b>おむつ・ミルクの値段くらべ</b><span>1枚あたり・100gあたりで安い順に</span></a>' +
+      '<a class="price-link" href="money.html"><b>子育てのお金・制度と安全</b><span>018サポート・医療費控除・育休の上乗せ・冬のSIDS</span></a>' +
       '<a class="shelf-link" href="https://room.rakuten.co.jp/yorupapa_night/collection/1800012917458221" target="_blank" rel="noopener sponsored">はじめてのお出かけの持ち物（楽天ROOM）→</a></div>' +
       (msg ? '<p class="note err">' + esc(msg) + "</p>" : "") +
       (st.failed ? '<p class="note err">データを読みこめませんでした。電波のよいところで、ページを開き直してください。</p>' : "");
