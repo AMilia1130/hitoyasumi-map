@@ -8,6 +8,7 @@
     junyu: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 6.5V4.8a1.5 1.5 0 0 1 3 0v1.7"/><rect x="9" y="6.5" width="6" height="2.6" rx="1"/><path d="M8 12.2a3 3 0 0 1 3-3h2a3 3 0 0 1 3 3V18a3 3 0 0 1-3 3h-2a3 3 0 0 1-3-3z"/><path d="M8 13.5h2.6M8 16.5h2.6"/></svg>',
     omutsu: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7.5h17v3.2c0 4.6-3.8 8.3-8.5 8.3s-8.5-3.700-8.500-8.300z"/><path d="M3.500 11c3.200 0 5.200 2.200 5.700 6.500M20.500 11c-3.200 0-5.200 2.200-5.700 6.500"/></svg>',
     oyu: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.300c3.300 3.900 6 6.800 6 10.200a6 6 0 0 1-12 0c0-3.400 2.700-6.300 6-10.200z"/><path d="M9.300 14.200a2.800 2.800 0 0 0 2.300 2.700"/></svg>',
+    bfood: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a7 7 0 0 1 7-7v7z"/><path d="M4 11h13a5 5 0 0 1-5 4H8a4 4 0 0 1-4-4z"/><path d="M17 11l1.500-5H21"/><circle cx="8" cy="19" r="1.700"/><circle cx="15" cy="19" r="1.700"/></svg>',
     food: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v6.500a2.500 2.500 0 0 0 5 0V3M8.500 3v18"/><path d="M16.500 3c-1.900 0-3 2.300-3 5s1.100 4.500 3 4.500V21M16.500 3v9.500"/></svg>',
     play: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.500"/><path d="M4.500 8.500c4 1 6.500 4 7 11.500M19.500 8.500c-4 1-6.500 4-7 11.500M6 6c3.500 2.500 8.500 2.500 12 0"/></svg>',
     jido: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.200 12 4.500l8 6.700V20H4z"/><path d="M12 17.200s-3-1.900-3-3.900a1.700 1.700 0 0 1 3-1 1.700 1.700 0 0 1 3 1c0 2-3 3.900-3 3.900z"/></svg>',
@@ -18,6 +19,8 @@
     { id: "omutsu", label: "おむつ替え", color: "#2F8FD8", on: true },
     { id: "oyu", label: "ミルクのお湯", color: "#E2A019", on: false },
     { id: "food", label: "ごはん", color: "#8A63D2", on: false },
+    // 11/28 ユーザー「ベビーカー入店可能な飲食店も追加」: 東京都の協賛店一覧で「ベビーカー入店可」の飲食店（席で食べられる店）
+    { id: "bfood", label: "ベビーカーOKのごはん", color: "#6C4FB8", on: false },
     { id: "play", label: "あそぶ", color: "#1FA676", on: false },
     { id: "jido", label: "児童館", color: "#DB5C8D", on: false }
   ];
@@ -59,7 +62,10 @@
   function fmt(m) { return m < 1000 ? Math.max(10, Math.round(m / 10) * 10) + "m" : (m / 1000).toFixed(1) + "km"; }
   function walk(m) { return "徒歩" + Math.max(1, Math.round(m / 67)) + "分"; }      // 子連れのゆっくりめ（分速67m）
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
-  function matches(p, id) { return (id === "food" || id === "jido" || id === "play") ? p.c === id : p.f.indexOf(id) >= 0; }
+  function matches(p, id) {
+    if (id === "bfood") return p.c === "food" && p.f.indexOf("bcar") >= 0;
+    return (id === "food" || id === "jido" || id === "play") ? p.c === id : p.f.indexOf(id) >= 0;
+  }
   function mainNeed(p) {   // 選んでいる「さがしたいもの」のうち、この場所が当てはまる最初のもの（ピンの色）
     for (var i = 0; i < NEEDS.length; i++) if (NEEDS[i].on && matches(p, NEEDS[i].id)) return NEEDS[i];
     return NEED[p.c] || NEEDS[0];
